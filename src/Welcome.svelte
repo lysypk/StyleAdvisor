@@ -36,13 +36,13 @@
       {/each}
     </div>
     <div class="genders">
-      <button class:active={gender?.who==='man'} onclick={() => gender={who:'man'}} aria-label="Man">
+      <button class:active={gender?.who==='man'} onclick={() => gender={who:'man'}} aria-label={$t('gender_man')}>
         <span class="symbol">♂</span><span class="gender-label">{$t('gender_man')}</span>
       </button>
-      <button class:active={gender?.who==='woman'} onclick={() => gender={who:'woman'}} aria-label="Woman">
+      <button class:active={gender?.who==='woman'} onclick={() => gender={who:'woman'}} aria-label={$t('gender_woman')}>
         <span class="symbol">♀</span><span class="gender-label">{$t('gender_woman')}</span>
       </button>
-      <button class:active={gender?.who==='couple'} onclick={() => gender={who:'couple'}} aria-label="Couple">
+      <button class:active={gender?.who==='couple'} onclick={() => gender={who:'couple'}} aria-label={$t('gender_couple')}>
         <span class="symbol">♂♀</span><span class="gender-label">{$t('gender_couple')}</span>
       </button>
     </div>

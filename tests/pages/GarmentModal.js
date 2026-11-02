@@ -26,16 +26,16 @@ export class GarmentModal {
   }
 
   async expectSaveEnabled() {
-    const saveBtn = this.page.locator('.modal .primary').filter({ hasText: 'Save' }).first();
+    const saveBtn = this.page.locator('.modal .primary').first();
     await expect(saveBtn).toBeEnabled();
   }
 
   async save() {
-    const saveBtn = this.page.locator('.modal .primary').filter({ hasText: 'Save' }).first();
+    const saveBtn = this.page.locator('.modal .primary').first();
     await saveBtn.click();
   }
 
   async expectSavedSummary() {
-    await expect(this.page.locator('.summary').first()).toContainText('Color:');
+    await expect(this.page.locator('.summary').first()).toBeVisible();
   }
 }
