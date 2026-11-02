@@ -3,7 +3,7 @@
   import { get } from 'svelte/store';
   import { scoreOutfit, conflictsByGarment } from './data/scoring.js';
   import { language } from './store.ts';
-  import { occasion, gender, selections } from './store.ts';
+  import { occasion, gender, selections, activeGarmentModal } from './store.ts';
   import { tracedFetch } from './telemetry.js';
   import { onMount } from 'svelte';
   import './global.css';
@@ -156,7 +156,7 @@
   });
   occasion.set(o); gender.set(g); activeSide='man';
  }
-  function reset(){ occasion.set(null); gender.set(null); selections.set({}); activeSide='man'; }
+  function reset(){ occasion.set(null); gender.set(null); selections.set({}); activeGarmentModal.set(null); activeSide='man'; }
   function garmentsFor(side){ return garmentList({ who: side }, $occasion); }
   function clear(){ selections.set({}); }
 </script>

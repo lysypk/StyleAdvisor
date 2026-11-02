@@ -5,6 +5,7 @@
   import { colourHexMap, defaultColors, watchStrapColors, watchCaseColors, watchDialColors, womenBlouseColors, womenDressColors, womenSkirtColors, womenPantsColors, womenShoesColors, womenBagColors, womenJewelryColors, patterns } from './data/colors.js';
   import { t } from './i18n.ts';
   import { language } from './store.ts';
+import { activeGarmentModal } from './store.ts';
   import { typeCriteria } from './data/types.js';
   import { garmentSpecificRules, rulesFor } from './data/rules.js';
 let { garment, garmentKey = null, gender = null, optional = false, selections, occasion = null, conflicts = [] } = $props();
@@ -238,7 +239,22 @@ function triggerColor() { if (!optsColor.length && !loadingColor) fetchColors(ga
     loadingWardrobe = false;
   }
 
-  function openModal() { open = true; init(); }
+  function closeAllDropdowns() {
+  wardrobeOpen = false;
+  strapOpen = false;
+  caseOpen = false;
+  dialOpen = false;
+  colorOpen = false;
+  patternOpen = false;
+  secondaryOpen = false;
+  typeOpen = false;
+}
+
+function openModal() {
+  activeGarmentModal.set(garmentKey || garment);
+  open = true;
+  init();
+}
 
   function typeKey() {
     const g = gender?.who || 'man';
@@ -346,6 +362,7 @@ async function fetchFor(field) {
         selections.update(s => ({ ...s, [garmentKey || garment]: out }));
       }
       open = false;
+      activeGarmentModal.set(null);
       return;
     }
     const out = { color, pattern, secondary, included };
@@ -357,8 +374,10 @@ async function fetchFor(field) {
     const selectionKey = garmentKey || garment;
     selections.update(s => ({ ...s, [selectionKey]: out }));
     open = false;
+    activeGarmentModal.set(null);
   }
-  function cancel() { open = false; }
+
+  function cancel() { open = false; activeGarmentModal.set(null); }
   function clearSelection() { const selectionKey = garmentKey || garment; selections.update(s => { const c = { ...s }; delete c[selectionKey]; return c; }); }
 
   function isSaveAllowed() {
@@ -410,12 +429,12 @@ async function fetchFor(field) {
   {/if}
 </div>
 
-{#if open}
-  <div class="modal">
+{#if open && $activeGarmentModal === (garmentKey || garment)}
+   <div class="modal">
     <h3>{$t('garment_' + garment.replace(/\s+/g, ''))} {$t('details')}</h3>
     <label class="wardrobe-toggle"><input type="checkbox" bind:checked={useWardrobe} onchange={() => { if (useWardrobe) fetchWardrobe(); else optsWardrobe = []; }} /> {$t('use_wardrobe_only')}</label>
     {#if useWardrobe}
-      <label>Owned {garment}<div class="dropdown"><button class="dropdown-trigger" onclick={() => { wardrobeOpen = !wardrobeOpen; if (!optsWardrobe.length) fetchWardrobe(); }} type="button">{(wardrobeView.find(i=>i.id===wardrobePick)?.name) || 'Select item…'}</button>
+      <label>Owned {garment}<div class="dropdown"><button class="dropdown-trigger" onclick={() => { const _n = !wardrobeOpen; closeAllDropdowns(); wardrobeOpen = _n; if (wardrobeOpen && !optsWardrobe.length) fetchWardrobe(); }} type="button">{(wardrobeView.find(i=>i.id===wardrobePick)?.name) || 'Select item…'}</button>
         {#if wardrobeOpen}<div class="dropdown-panel">
           {#if !wardrobeView.length}<div class="dropdown-option">No items</div>{/if}
         </div>{/if}</div></label>
@@ -423,7 +442,7 @@ async function fetchFor(field) {
       {#if garment === "Watch"}
         {#if optional && !included}<p style="color:var(--muted)">{$t('garment_excluded')}</p>
         {:else}
-          <label>{$t('strap_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => { strapOpen=!strapOpen; triggerStrap(); }} type="button">{strap ? $t('color_'+strap.replace(/\s+/g,'')) : ($language === 'pl' ? 'Wybierz kolor' : 'Select')}</button>
+          <label>{$t('strap_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => { const _n = !strapOpen; closeAllDropdowns(); strapOpen = _n; if (strapOpen) triggerStrap(); }} type="button">{strap ? $t('color_'+strap.replace(/\s+/g,'')) : ($language === 'pl' ? 'Wybierz kolor' : 'Select')}</button>
             {#if strapOpen}
               <div class="dropdown-panel">
                 {#each optsStrap as o}<button class="dropdown-option" onclick={() => { strap = o.name; strapOpen=false; }} type="button"><span class="swatch" style="background:{colourHexMap[o.name]||'#888'}"></span> {$t('color_'+o.name.replace(/\s+/g,''))}{o.prob !== null ? ' ' + o.prob + '%' : ''}</button>{/each}
@@ -431,7 +450,7 @@ async function fetchFor(field) {
               </div>
             {/if}
           </div></label>
-          <label>{$t('case_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => { caseOpen=!caseOpen; triggerCase(); }} type="button">{caseC ? $t('color_'+caseC.replace(/\s+/g,'')) : ($language === 'pl' ? 'Wybierz kolor' : 'Select')}</button>
+          <label>{$t('case_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => { const _n = !caseOpen; closeAllDropdowns(); caseOpen = _n; if (caseOpen) triggerCase(); }} type="button">{caseC ? $t('color_'+caseC.replace(/\s+/g,'')) : ($language === 'pl' ? 'Wybierz kolor' : 'Select')}</button>
             {#if caseOpen}
               <div class="dropdown-panel">
                 {#each optsCase as o}<button class="dropdown-option" onclick={() => { caseC = o.name; caseOpen=false; }} type="button"><span class="swatch" style="background:{colourHexMap[o.name]||'#888'}"></span> {$t('color_'+o.name.replace(/\s+/g,''))}{o.prob !== null ? ' ' + o.prob + '%' : ''}</button>{/each}
@@ -439,7 +458,7 @@ async function fetchFor(field) {
               </div>
             {/if}
           </div></label>
-          <label>{$t('dial_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => { dialOpen=!dialOpen; triggerDial(); }} type="button">{dial ? $t('color_'+dial.replace(/\s+/g,'')) : ($language === 'pl' ? 'Wybierz kolor' : 'Select')}</button>
+          <label>{$t('dial_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => { const _n = !dialOpen; closeAllDropdowns(); dialOpen = _n; if (dialOpen) triggerDial(); }} type="button">{dial ? $t('color_'+dial.replace(/\s+/g,'')) : ($language === 'pl' ? 'Wybierz kolor' : 'Select')}</button>
             {#if dialOpen}
               <div class="dropdown-panel">
                 {#each optsDial as o}<button class="dropdown-option" onclick={() => { dial = o.name; dialOpen=false; }} type="button"><span class="swatch" style="background:{colourHexMap[o.name]||'#888'}"></span> {$t('color_'+o.name.replace(/\s+/g,''))}{o.prob !== null ? ' ' + o.prob + '%' : ''}</button>{/each}
@@ -450,7 +469,7 @@ async function fetchFor(field) {
         {/if}
       {:else}
         {#if !useWardrobe}
-          <label>{$t('color_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => { colorOpen=!colorOpen; triggerColor(); }} type="button">{$t('color_'+color.replace(/\s+/g,''))}</button>
+          <label>{$t('color_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => { const _n = !colorOpen; closeAllDropdowns(); colorOpen = _n; if (colorOpen) triggerColor(); }} type="button">{$t('color_'+color.replace(/\s+/g,''))}</button>
             {#if colorOpen}
               <div class="dropdown-panel">
                 {#if loadingColor}<div class="dropdown-option">{$t('loading')}</div>
@@ -462,7 +481,7 @@ async function fetchFor(field) {
             {/if}
           </div></label>
           {#if ['Shirt','Jacket','Tie','Pants','Skirt','Dress'].includes(garment)}
-            <label>Pattern <div class="dropdown"><button class="dropdown-trigger" onclick={() => { patternOpen=!patternOpen; triggerPattern(); }} type="button">{$t('pattern_'+pattern.replace(/\s+/g,''))}</button>
+            <label>Pattern <div class="dropdown"><button class="dropdown-trigger" onclick={() => { const _n = !patternOpen; closeAllDropdowns(); patternOpen = _n; if (patternOpen) triggerPattern(); }} type="button">{$t('pattern_'+pattern.replace(/\s+/g,''))}</button>
               {#if patternOpen}
                 <div class="dropdown-panel">
                   {#each optsPattern as o}<button class="dropdown-option" onclick={() => { pattern = o.name; patternOpen=false; }} type="button">{$t('pattern_'+o.name.replace(/\s+/g,''))}{o.prob !== null ? ' ' + o.prob + '%' : ''}</button>{/each}
@@ -473,7 +492,7 @@ async function fetchFor(field) {
           {/if}
           {#if pattern !== 'Plain' && ['Shirt','Jacket','Tie','Pants','Skirt','Dress'].includes(garment)}
             <label>{$t('secondary_label')} <div class="dropdown">
-              <button class="dropdown-trigger" onclick={() => { secondaryOpen=!secondaryOpen; triggerSecondary(); }} type="button">{secondary ? $t('color_'+secondary.replace(/\s+/g,'')) : ($language === 'pl' ? 'Wybierz kolor' : 'Select')}</button>
+              <button class="dropdown-trigger" onclick={() => { const _n = !secondaryOpen; closeAllDropdowns(); secondaryOpen = _n; if (secondaryOpen) triggerSecondary(); }} type="button">{secondary ? $t('color_'+secondary.replace(/\s+/g,'')) : ($language === 'pl' ? 'Wybierz kolor' : 'Select')}</button>
               {#if secondaryOpen}
                 <div class="dropdown-panel">
                   {#each optsSecondary as o}<button class="dropdown-option" onclick={() => { secondary = o.name; secondaryOpen=false; }} type="button"><span class="swatch" style="background:{colourHexMap[o.name]||'#888'}"></span> {$t('color_'+o.name.replace(/\s+/g,''))}{o.prob !== null ? ' ' + o.prob + '%' : ''}</button>{/each}
@@ -483,7 +502,7 @@ async function fetchFor(field) {
             </div></label>
           {/if}
           {#if garment === 'Pants' || garment === 'Shoes' || garment === 'Skirt'}
-            <label>{$t('type_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => { typeOpen=!typeOpen; triggerType(); }} type="button">{typeValue ? ($t('type_' + typeValue.replace(/[\s-]+/g,'')) === 'type_' + typeValue.replace(/[\s-]+/g,'') ? typeValue : $t('type_' + typeValue.replace(/[\s-]+/g,''))) : ($language === 'pl' ? 'Wybierz' : 'Select')}</button>
+            <label>{$t('type_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => { const _n = !typeOpen; closeAllDropdowns(); typeOpen = _n; if (typeOpen) triggerType(); }} type="button">{typeValue ? ($t('type_' + typeValue.replace(/[\s-]+/g,'')) === 'type_' + typeValue.replace(/[\s-]+/g,'') ? typeValue : $t('type_' + typeValue.replace(/[\s-]+/g,''))) : ($language === 'pl' ? 'Wybierz' : 'Select')}</button>
               {#if typeOpen}
                 <div class="dropdown-panel">
                   {#each (optsPantsType.length?optsPantsType:[]) as o}<button class="dropdown-option" onclick={() => { typeValue = o.name; typeOpen=false; }} type="button">{$t('type_' + o.name.replace(/[\s-]+/g,''))}{o.prob !== null ? ' ' + o.prob + '%' : ''}</button>{/each}
