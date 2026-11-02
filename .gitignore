@@ -33,3 +33,8 @@ Thumbs.db
 
 # Keep lock file tracked (intentionally NOT ignored)
 # node_modules already ignored above
+# Coverage / tooling
+coverage/
+.npm-debug.log*
+.eslintcache
+.cache/

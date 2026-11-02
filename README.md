@@ -55,6 +55,7 @@ Place garment SVGs (400x400, centered) in `public/`. The `svgMap` in `src/Garmen
 
 ## Notes
 - Wardrobe data is stored in browser localStorage (offline-first) and can be exported/imported as JSON.
+- The UI is bilingual (EN/PL); use the EN/PL toggle in the header.
 - OCR results are verified by the user before saving; images are not persisted.
 - Docs (temporary, for research mostly): docs/Research.md, docs/woman_garment.md, docs/AI_improvement.md, docs/LLM_observability_research.md, docs/playwright_tests_implementation.md, docs/Arize_Phoenix_usage.md.
 
