@@ -2,6 +2,12 @@
 
 Minimalny, przeglądarkowy kreator stylizacji. Użytkownik wybiera okazję i osobę (mężczyzna, kobieta, para; flow dla mężczyzny jest obecnie najbardziej rozbudowany), a następnie wybiera elementy garderoby i ich kolory/wzory. Kolory, wzory i typy mogą być sugerowane przez lokalny model Ollama.
 
+## Wymagania
+- Node.js 18+ (zawiera npm)
+- (Opcjonalnie do sugestii AI) Ollama zainstalowana lokalnie
+- Modele Ollama: `ollama pull tev1:4b` oraz `ollama pull lfm3-vl:2b`
+- Nowoczesna przeglądarka
+
 ## Uruchomienie
 ```bash
 cd C:/Users/lysyp/suite/new-frontend
