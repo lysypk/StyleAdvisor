@@ -5,8 +5,18 @@
   import { colourHexMap, allColors } from './data/colors.js';
   import { t } from './i18n.ts';
   import { language } from './store.ts';
+  import { get } from 'svelte/store';
 
-  let type = $state('Shirt');
+  function L(key) { return get(t)(key); }
+function colorName(v) { return v ? L('color_' + String(v).replace(/\s+/g, '')) : '—'; }
+function itemDetail(item) {
+  if (item.type === 'Watch') {
+    return `${L('strap_label')}: ${colorName(item.strap)} · ${L('case_label')}: ${colorName(item.case)} · ${L('dial_label')}: ${colorName(item.dial)}`;
+  }
+  return `${L('color_label')}: ${colorName(item.color)} · ${L('pattern_label')}: ${item.pattern ? L('pattern_' + String(item.pattern).replace(/\s+/g, '')) : 'n/a'}${item.secondary ? ' · ' + L('secondary_label') + ': ' + colorName(item.secondary) : ''}${item.itemType ? ' · ' + L('type_label') + ': ' + L('type_' + String(item.itemType).replace(/[\s-]+/g, '')) : ''}`;
+}
+
+let type = $state('Shirt');
   let g = $state('');
   let color = $state('White');
   let pattern = $state('Plain');
@@ -82,12 +92,12 @@
     const file = e.target.files && e.target.files[0];
     if (!file) return;
     photoError = '';
-    if (!file.type.startsWith('image/')) { photoError = 'Please choose an image file (JPEG, PNG, WebP).'; e.target.value = ''; return; }
-    if (file.size > 5 * 1024 * 1024) { photoError = 'Image too large (max 5 MB).'; e.target.value = ''; return; }
+    if (!file.type.startsWith('image/')) { photoError = $t('image_file_error'); e.target.value = ''; return; }
+    if (file.size > 5 * 1024 * 1024) { photoError = $t('image_size_error'); e.target.value = ''; return; }
     const reader = new FileReader();
     reader.onload = () => {
       const img = new Image();
-      img.onerror = () => { photoError = 'Image load failed'; };
+      img.onerror = () => { photoError = $t('image_load_error'); };
       img.onload = () => {
         const max = 1024;
         let w = img.width, h = img.height;
@@ -177,7 +187,7 @@
         addItem(item);
         added++;
       } catch (err) {
-        photoError = err.message || 'Analysis failed';
+        photoError = err.message || $t('analysis_failed');
       }
     }
     multiAnalyzing = false;
@@ -217,7 +227,7 @@
       photoOpen = false;
       formOpen = true;
     } catch (err) {
-      photoError = err.message || 'Analysis failed';
+      photoError = err.message || $t('analysis_failed');
     } finally {
       analyzing = false;
     }
@@ -326,7 +336,7 @@
     </div>
   </div>
   <div class="actions" style="margin-bottom:1rem;">
-    <input class="ghost" style="max-width:180px;" type="search" bind:value={wardrobeSearch} placeholder={$t('search_wardrobe')} />
+    <input class="ghost" style="max-width:150px;min-width:120px;" type="search" bind:value={wardrobeSearch} placeholder={$t('search_wardrobe')} />
     <button class="primary" onclick={() => { editingId=null; editingName=''; formOpen=true; }}>{$t('add_item')}</button>
     <button class="ghost" onclick={() => photoOpen = true}>{$t('add_from_photo')}</button>
     <button class="ghost" onclick={exportJson}>{$t('export_json')}</button>
@@ -336,30 +346,30 @@
 
   {#if formOpen}
     <div class="wardrobe-form">
-      <label>{$t('gender_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'g' ? '' : 'g')} type="button" disabled={!!editingId}>{g || 'Select gender'}</button>{#if openField === 'g'}<div class="dropdown-panel">{#each ['man','woman'] as v}<button class="dropdown-option" onclick={() => { g = v; openField=''; }} type="button">{v}</button>{/each}</div>{/if}</div></label>
-      <label>{$t('type_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'type' ? '' : 'type')} disabled={!!editingId || !genderSelected} type="button">{type || 'Select type'}</button>{#if openField === 'type'}<div class="dropdown-panel">{#each availableTypes as v}<button class="dropdown-option" onclick={() => { type = v; openField=''; }} type="button">{v}</button>{/each}</div>{/if}</div></label>
+      <label>{$t('gender_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'g' ? '' : 'g')} type="button" disabled={!!editingId}>{g ? $t('gender_'+g) : $t('select')}</button>{#if openField === 'g'}<div class="dropdown-panel">{#each ['man','woman'] as v}<button class="dropdown-option" onclick={() => { g = v; openField=''; }} type="button">{$t('gender_'+v)}</button>{/each}</div>{/if}</div></label>
+      <label>{$t('type_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'type' ? '' : 'type')} disabled={!!editingId || !genderSelected} type="button">{type ? $t('garment_'+type.replace(/\s+/g,'')) : $t('select')}</button>{#if openField === 'type'}<div class="dropdown-panel">{#each availableTypes as v}<button class="dropdown-option" onclick={() => { type = v; openField=''; }} type="button">{$t('garment_'+v.replace(/\s+/g,''))}</button>{/each}</div>{/if}</div></label>
       {#if type === 'Watch'}
-        <label>Strap colour <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'strap' ? '' : 'strap')} disabled={!genderSelected} type="button"><span class="swatch" style="background:{colourHexMap[strap]||'#888'}"></span> {strap ? $t('color_'+strap.replace(/\s+/g,'')) : ($language === 'pl' ? 'Wybierz kolor' : 'Select')}</button>{#if openField === 'strap'}<div class="dropdown-panel">{#each allColors as c}<button class="dropdown-option" onclick={() => { strap=c; openField=''; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {c}</button>{/each}</div>{/if}</div></label>
-        <label>Case colour <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'caseC' ? '' : 'caseC')} disabled={!genderSelected} type="button"><span class="swatch" style="background:{colourHexMap[caseC]||'#888'}"></span> {caseC ? $t('color_'+caseC.replace(/\s+/g,'')) : ($language === 'pl' ? 'Wybierz kolor' : 'Select')}</button>{#if openField === 'caseC'}<div class="dropdown-panel">{#each ['Silver','Gold','Black'] as c}<button class="dropdown-option" onclick={() => { caseC=c; openField=''; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {c}</button>{/each}</div>{/if}</div></label>
-        <label>Dial colour <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'dial' ? '' : 'dial')} disabled={!genderSelected} type="button"><span class="swatch" style="background:{colourHexMap[dial]||'#888'}"></span> {dial ? $t('color_'+dial.replace(/\s+/g,'')) : ($language === 'pl' ? 'Wybierz kolor' : 'Select')}</button>{#if openField === 'dial'}<div class="dropdown-panel">{#each ['White','Black','Blue','Silver','Gold'] as c}<button class="dropdown-option" onclick={() => { dial=c; openField=''; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {c}</button>{/each}</div>{/if}</div></label>
+        <label>{$t('strap_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'strap' ? '' : 'strap')} disabled={!genderSelected} type="button"><span class="swatch" style="background:{colourHexMap[strap]||'#888'}"></span> {strap ? $t('color_'+strap.replace(/\s+/g,'')) : $t('select')}</button>{#if openField === 'strap'}<div class="dropdown-panel">{#each allColors as c}<button class="dropdown-option" onclick={() => { strap=c; openField=''; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}</div>{/if}</div></label>
+        <label>{$t('case_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'caseC' ? '' : 'caseC')} disabled={!genderSelected} type="button"><span class="swatch" style="background:{colourHexMap[caseC]||'#888'}"></span> {caseC ? $t('color_'+caseC.replace(/\s+/g,'')) : $t('select')}</button>{#if openField === 'caseC'}<div class="dropdown-panel">{#each ['Silver','Gold','Black'] as c}<button class="dropdown-option" onclick={() => { caseC=c; openField=''; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}</div>{/if}</div></label>
+        <label>{$t('dial_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'dial' ? '' : 'dial')} disabled={!genderSelected} type="button"><span class="swatch" style="background:{colourHexMap[dial]||'#888'}"></span> {dial ? $t('color_'+dial.replace(/\s+/g,'')) : $t('select')}</button>{#if openField === 'dial'}<div class="dropdown-panel">{#each ['White','Black','Blue','Silver','Gold'] as c}<button class="dropdown-option" onclick={() => { dial=c; openField=''; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}</div>{/if}</div></label>
       {:else}
-        <label>{$t('color_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'color' ? '' : 'color')} disabled={!genderSelected} type="button"><span class="swatch" style="background:{colourHexMap[color]||'#888'}"></span> {$t('color_'+color.replace(/\s+/g,''))}</button>{#if openField === 'color'}<div class="dropdown-panel">{#each allColors as c}<button class="dropdown-option" onclick={() => { color=c; openField=''; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {c}</button>{/each}</div>{/if}</div></label>
+        <label>{$t('color_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'color' ? '' : 'color')} disabled={!genderSelected} type="button"><span class="swatch" style="background:{colourHexMap[color]||'#888'}"></span> {$t('color_'+color.replace(/\s+/g,''))}</button>{#if openField === 'color'}<div class="dropdown-panel">{#each allColors as c}<button class="dropdown-option" onclick={() => { color=c; openField=''; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}</div>{/if}</div></label>
         {#if hasPattern}
-        <label>{$t('pattern_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'pattern' ? '' : 'pattern')} disabled={!genderSelected} type="button">{$t('pattern_'+pattern.replace(/\s+/g,''))}</button>{#if openField === 'pattern'}<div class="dropdown-panel">{#each ['Plain','Stripes','Checks','Dots'] as c}<button class="dropdown-option" onclick={() => { pattern=c; openField=''; }} type="button">{c}</button>{/each}</div>{/if}</div></label>
-        {#if pattern !== 'Plain'}<label>{$t('secondary_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'secondary' ? '' : 'secondary')} disabled={!genderSelected} type="button"><span class="swatch" style="background:{colourHexMap[secondary]||'#ccc'}"></span> {secondary ? $t('color_'+secondary.replace(/\s+/g,'')) : ($language === 'pl' ? 'Wybierz kolor' : 'Select')}</button>{#if openField === 'secondary'}<div class="dropdown-panel">{#each allColors as c}<button class="dropdown-option" onclick={() => { secondary=c; openField=''; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {c}</button>{/each}</div>{/if}</div></label>{/if}
+        <label>{$t('pattern_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'pattern' ? '' : 'pattern')} disabled={!genderSelected} type="button">{$t('pattern_'+pattern.replace(/\s+/g,''))}</button>{#if openField === 'pattern'}<div class="dropdown-panel">{#each ['Plain','Stripes','Checks','Dots'] as c}<button class="dropdown-option" onclick={() => { pattern=c; openField=''; }} type="button">{$t('pattern_'+c)}</button>{/each}</div>{/if}</div></label>
+        {#if pattern !== 'Plain'}<label>{$t('secondary_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'secondary' ? '' : 'secondary')} disabled={!genderSelected} type="button"><span class="swatch" style="background:{colourHexMap[secondary]||'#ccc'}"></span> {secondary ? $t('color_'+secondary.replace(/\s+/g,'')) : $t('select')}</button>{#if openField === 'secondary'}<div class="dropdown-panel">{#each allColors as c}<button class="dropdown-option" onclick={() => { secondary=c; openField=''; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}</div>{/if}</div></label>{/if}
         {/if}
         {#if hasType}
           <label>{$t('type_label')}
             <div class="dropdown">
-              <button class="dropdown-trigger" onclick={() => (openField = openField === 'itype' ? '' : 'itype')} disabled={!genderSelected} type="button">{itype || 'Select'}</button>
+              <button class="dropdown-trigger" onclick={() => (openField = openField === 'itype' ? '' : 'itype')} disabled={!genderSelected} type="button">{itype ? $t('type_'+itype.replace(/[\s-]+/g,'')) : $t('select')}</button>
               {#if openField === 'itype'}
                 <div class="dropdown-panel">
                   {#if type === 'Pants'}
-                    {#each (g === 'woman' ? ['Wide-Leg','Straight','Tapered','Palazzo','Bootcut'] : ['Jeans','Chinos','Dress','Slim','Cargo']) as c}<button class="dropdown-option" onclick={() => { itype = c; openField=''; }} type="button">{c}</button>{/each}
+                    {#each (g === 'woman' ? ['Wide-Leg','Straight','Tapered','Palazzo','Bootcut'] : ['Jeans','Chinos','Dress','Slim','Cargo']) as c}<button class="dropdown-option" onclick={() => { itype = c; openField=''; }} type="button">{$t('type_'+c.replace(/[\s-]+/g,''))}</button>{/each}
                   {:else if type === 'Shoes'}
-                    {#each (g === 'woman' ? ['Pump','Ballet Flat','Loafer','Sandal','Wedge','Ankle Boot','Closed-Toe Flat'] : ['Oxford','Derby','Loafer','Monk']) as c}<button class="dropdown-option" onclick={() => { itype = c; openField=''; }} type="button">{c}</button>{/each}
+                    {#each (g === 'woman' ? ['Pump','Ballet Flat','Loafer','Sandal','Wedge','Ankle Boot','Closed-Toe Flat'] : ['Oxford','Derby','Loafer','Monk']) as c}<button class="dropdown-option" onclick={() => { itype = c; openField=''; }} type="button">{$t('type_'+c.replace(/[\s-]+/g,''))}</button>{/each}
                   {:else if type === 'Skirt'}
-                    {#each ['Midi','Pencil','A-Line','Pleated','Maxi','Mini'] as c}<button class="dropdown-option" onclick={() => { itype = c; openField=''; }} type="button">{c}</button>{/each}
+                    {#each ['Midi','Pencil','A-Line','Pleated','Maxi','Mini'] as c}<button class="dropdown-option" onclick={() => { itype = c; openField=''; }} type="button">{$t('type_'+c.replace(/[\s-]+/g,''))}</button>{/each}
                   {/if}
                 </div>
               {/if}
@@ -400,7 +410,7 @@
     <div class="modal">
       <h3>{$t('add_from_photo')}</h3>
       <label class="ghost" style="cursor:pointer;width:100%;text-align:center;">{$t('select_photo')} <input type="file" accept="image/*" onchange={onPhotoFile} hidden /></label>
-      {#if !photoPreview}<p class="muted" style="font-size:.85rem;margin:.25rem 0;">Accepted: image files, up to 5 MB. Must be JPEG, PNG, or WebP.</p>{/if}
+      {#if !photoPreview}<p class="muted" style="font-size:.85rem;margin:.25rem 0;">{$t('photo_req')}</p>{/if}
       {#if photoPreview}<img src={photoPreview} alt="preview" style="width:100%;border-radius:12px;margin:.5rem 0;" />{/if}
       {#if photoError}<p style="color:var(--accent-error)">{photoError}</p>{/if}
       <div class="actions">
@@ -413,13 +423,13 @@
   <div class="wardrobe-list">
     {#each visibleWardrobeItems as item}
       <div class="wardrobe-card">
-        <strong>{item.name || 'Unnamed item'}</strong>
-        <div class="wardrobe-card-meta">{(item.gender || '') ? (item.gender.charAt(0).toUpperCase()+item.gender.slice(1)) : '—'} · {item.type || '—'}{item.itemType ? ' ('+item.itemType+')' : ''}</div>
-                <div><span class="swatch" style="background:{colourHexMap[item.color || item.strap || item.case || item.dial] || '#ccc'}"></span> {item.type === 'Watch' ? `Strap: ${item.strap || '—'} · Case: ${item.case || '—'} · Dial: ${item.dial || '—'}` : `{$t('color_label')}: ${item.color || '—'} · {$t('pattern_label')}: ${item.pattern || 'n/a'} ${item.secondary ? '· Secondary: '+item.secondary : ''} ${item.itemType ? '· Type: '+item.itemType : ''}`}</div>
+        <strong>{item.name || $t('unnamed_item')}</strong>
+        <div class="wardrobe-card-meta">{item.gender ? $t('gender_'+item.gender) : '—'} · {item.type ? $t('garment_'+item.type.replace(/\s+/g,'')) : '—'}{item.itemType ? ' (' + $t('type_'+item.itemType.replace(/[\s-]+/g,'')) + ')' : ''}</div>
+                <div><span class="swatch" style="background:{colourHexMap[item.color || item.strap || item.case || item.dial] || '#ccc'}"></span> {itemDetail(item)}</div>
                 <div class="wardrobe-card-actions">
-          <button class="ghost" onclick={() => startEdit(item)}>Edit</button>
-          <button class="ghost" onclick={() => { renamingId = item.id; renameName = item.name || ''; renamePromptOpen = true; }}>Rename</button>
-          <button class="ghost" onclick={() => removeItem(item.id)}>Remove</button>
+          <button class="ghost" onclick={() => startEdit(item)}>{$t('edit')}</button>
+                    <button class="ghost" onclick={() => { renamingId = item.id; renameName = item.name || ''; renamePromptOpen = true; }}>{$t('rename')}</button>
+                    <button class="ghost" onclick={() => removeItem(item.id)}>{$t('remove')}</button>
         </div>
       </div>
     {/each}

@@ -16,8 +16,9 @@ export class WardrobePage {
   }
 
   async selectGender(label) {
+    const display = label === 'man' ? 'Man' : label === 'woman' ? 'Woman' : label;
     await this.page.locator('.wardrobe-form .dropdown-trigger').first().click();
-    await this.page.getByRole('button', { name: label, exact: true }).click();
+    await this.page.getByRole('button', { name: display, exact: true }).click();
   }
 
   async saveItem() {
