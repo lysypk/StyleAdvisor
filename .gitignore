@@ -1,6 +1,9 @@
 # Dependencies
 node_modules/
 package-lock.json.bak
+docs/
+_bmad/
+_bmad-output/
 
 # Build output
 dist/
