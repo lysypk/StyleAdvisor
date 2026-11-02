@@ -2,6 +2,16 @@
 
 Minimalny, przeglądarkowy kreator stylizacji. Użytkownik wybiera okazję i osobę (mężczyzna, kobieta, para; flow dla mężczyzny jest obecnie najbardziej rozbudowany), a następnie wybiera elementy garderoby i ich kolory/wzory. Kolory, wzory i typy mogą być sugerowane przez lokalny model Ollama.
 
+## Dlaczego stworzyłem tę aplikację
+Często miałem problem z doborem ubrań do okazji. Kiedy już poznałem odpowiednie zasady, szło lepiej — żeby nie powtarzać tego procesu, powstał pomysł na aplikację.
+
+## Dlaczego Ollama
+Bo konfiguracja jest łatwa i jestem leniwy. Modele są lokalne, więc działają za darmo. A ponieważ jestem kurwa biedny, to całkiem dobry powód.
+
+## Sprawdzone środowisko sprzętowe
+- GPU: NVIDIA GF 2070 (8 GB)
+- RAM: 32 GB
+
 ## Wymagania
 - Node.js 18+ (zawiera npm)
 - (Opcjonalnie do sugestii AI) Ollama zainstalowana lokalnie
