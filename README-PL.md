@@ -81,6 +81,9 @@ npm run test:unit
 ```
 Uruchamia testy smoke Playwright (headless). Do interaktywnego debugowania użyj `npx playwright test --ui`.
 
+## Dlaczego Arize Phoenix?
+Bo jest darmowe i brzmi fajnie xD Chciałem tylko spróbować wdrożyć jakieś narzędzie do śledzenia odpowiedzi AI. Na razie nie mam jebanego pojęcia, jak z tym gównem pracować, ale coś wykombinuję.
+
 ## Tracing Arize Phoenix (opcjonalne, bez Dockera)
 Uruchom lokalnie (wymaga `uv`):
 ```bash

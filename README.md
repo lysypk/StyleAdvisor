@@ -83,6 +83,9 @@ npm run test:unit
 Runs Playwright smoke tests (headless). Use `npx playwright test --ui` for interactive debugging.
 
 
+## Why Arize Phoenix?
+Because it's free and sounds cool xD I just wanted to try implementing some AI response tracing tool. Right now I have no fucking idea how to work with this shit, but I'll figure it out.
+
 ## Arize Phoenix tracing (optional, no Docker)
 Start locally (requires `uv`):
 ```bash
