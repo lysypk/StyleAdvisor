@@ -13,7 +13,7 @@ function itemDetail(item) {
   if (item.type === 'Watch') {
     return `${L('strap_label')}: ${colorName(item.strap)} · ${L('case_label')}: ${colorName(item.case)} · ${L('dial_label')}: ${colorName(item.dial)}`;
   }
-  return `${L('color_label')}: ${colorName(item.color)} · ${L('pattern_label')}: ${item.pattern ? L('pattern_' + String(item.pattern).replace(/\s+/g, '')) : 'n/a'}${item.secondary ? ' · ' + L('secondary_label') + ': ' + colorName(item.secondary) : ''}${item.itemType ? ' · ' + L('type_label') + ': ' + L('type_' + String(item.itemType).replace(/[\s-]+/g, '')) : ''}`;
+  return `${L('color_label')}: ${colorName(item.color)}${item.type === 'Handbag' || item.type === 'Jewelry' || !item.pattern ? '' : ' · ' + L('pattern_label') + ': ' + L('pattern_' + String(item.pattern).replace(/\s+/g, ''))}${item.secondary ? ' · ' + L('secondary_label') + ': ' + colorName(item.secondary) : ''}${item.itemType ? ' · ' + L('type_label') + ': ' + L('type_' + String(item.itemType).replace(/[\s-]+/g, '')) : ''}`;
 }
 
 let type = $state('Shirt');
