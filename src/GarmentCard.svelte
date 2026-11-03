@@ -487,7 +487,7 @@ async function fetchFor(field) {
             {/if}
           </div></label>
           {#if ['Shirt','Jacket','Tie','Pants','Skirt','Dress','Pocket Square'].includes(garment)}
-            <label>Pattern <div class="dropdown"><button class="dropdown-trigger" onclick={() => { const _n = !patternOpen; closeAllDropdowns(); patternOpen = _n; if (patternOpen) triggerPattern(); }} type="button">{$t('pattern_'+pattern.replace(/\s+/g,''))}</button>
+            <label>{$t('pattern_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => { const _n = !patternOpen; closeAllDropdowns(); patternOpen = _n; if (patternOpen) triggerPattern(); }} type="button">{$t('pattern_'+pattern.replace(/\s+/g,''))}</button>
               {#if patternOpen}
                 <div class="dropdown-panel">
                   {#each optsPattern as o}<button class="dropdown-option" onclick={() => { pattern = o.name; patternOpen=false; }} type="button">{$t('pattern_'+o.name.replace(/\s+/g,''))}{o.prob !== null ? ' ' + o.prob + '%' : ''}</button>{/each}
