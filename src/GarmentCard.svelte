@@ -396,7 +396,7 @@ async function fetchFor(field) {
   let tr = (key) => key;
   t.subscribe((value) => { tr = value; });
   function renderValue(k, v) {
-    const norm = String(v || '').replace(/\s+/g, '');
+    const norm = String(v || '').replace(/[\s-]+/g, '');
     const prefix = (k === 'pattern') ? 'pattern_' : 'color_';
     if (k === 'color' || k === 'strap' || k === 'case' || k === 'dial' || k === 'secondary' || String(k).includes('color')) {
       const translated = tr(prefix + norm);
@@ -405,6 +405,11 @@ async function fetchFor(field) {
     if (k === 'pattern' && typeof v === 'string') {
       const translated = tr('pattern_' + norm);
       return translated === 'pattern_' + norm ? String(v) : translated;
+    }
+    if (k === 'type' && typeof v === 'string') {
+      const key = 'type_' + norm;
+      const translated = tr(key);
+      return translated === key ? String(v) : translated;
     }
     return String(v ?? '');
   }

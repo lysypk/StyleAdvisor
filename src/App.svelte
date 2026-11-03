@@ -124,6 +124,11 @@
     let prefix = '';
     if (k === 'pattern') prefix = 'pattern_';
     else if (k === 'color' || k === 'strap' || k === 'case' || k === 'dial' || k === 'secondary' || String(k).includes('color')) prefix = 'color_';
+    if (k === 'type') {
+      const key = 'type_' + String(v ?? '').replace(/[\s-]+/g, '');
+      const out = lookup(key);
+      return out === key ? String(v ?? '') : out;
+    }
     if (!prefix) return String(v ?? '');
     const key = prefix + String(v ?? '').replace(/\s+/g, '');
     const out = lookup(key);
