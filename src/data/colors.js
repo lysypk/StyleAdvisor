@@ -11,14 +11,14 @@ export const patterns = ['Plain','Stripes','Checks','Dots'];
 
 export const defaultColors = ['Red','White','Black','Blue','Grey','Green','Yellow','Brown','Purple'];
 
-export const watchStrapColors = ['Black','Brown','Blue','Red','Green','Grey','Navy'];
-export const watchCaseColors = ['Silver','Gold','Black'];
-export const watchDialColors = ['White','Black','Blue','Silver','Gold'];
+export const watchStrapColors = ['Black','Brown','Blue','Red','Green','Grey','Navy', 'Gold', 'Silver'];
+export const watchCaseColors = ['Silver','Gold','Black', 'Grey','Blue'];
+export const watchDialColors = ['White','Black','Blue','Silver','Gold', 'Green', 'Grey'];
 
-export const womenBlouseColors = ['White','Ivory','Beige','Navy','Black','Grey','Emerald','Burgundy','Sapphire'];
-export const womenDressColors = ['Navy','Burgundy','Emerald','Sapphire','Black','Ivory','Pastel Pink','Pastel Blue','Floral Print'];
-export const womenSkirtColors = ['Navy','Black','Grey','Beige','Burgundy','Pastel Blue','Pastel Pink'];
-export const womenPantsColors = ['Navy','Black','Grey','Charcoal','Beige'];
-export const womenShoesColors = ['Black','Navy','Nude','Brown','Silver','Gold'];
-export const womenBagColors = ['Black','Navy','Beige','Burgundy','White'];
+export const womenBlouseColors = ['White','Ivory','Beige','Navy','Black','Grey','Emerald','Burgundy','Sapphire', 'Red','Blue','Green','Yellow','Brown','Purple'];
+export const womenDressColors = ['Navy','Burgundy','Emerald','Sapphire','Black','Ivory','Pastel Pink','Pastel Blue','Floral Print', 'Red','White','Blue','Grey','Green','Yellow','Brown','Purple'];
+export const womenSkirtColors = ['Navy','Black','Beige','Burgundy','Pastel Blue','Pastel Pink', 'Red','White','Blue','Grey','Green','Yellow','Brown','Purple'];
+export const womenPantsColors = ['Navy','Black','Charcoal','Beige', 'Red','White','Blue','Grey','Green','Yellow','Brown','Purple'];
+export const womenShoesColors = ['Black','Navy','Nude','Brown','Silver','Gold', 'Red','White','Blue','Grey','Green','Yellow','Brown','Purple'];
+export const womenBagColors = ['Black','Navy','Beige','Burgundy','White', 'Red', 'Blue','Grey','Green','Yellow','Brown','Purple'];
 export const womenJewelryColors = ['Silver','Gold','Rose Gold','Pearl','Black'];
