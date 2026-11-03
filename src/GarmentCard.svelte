@@ -32,7 +32,7 @@ function fieldsFor(g) {
       { key:'color', label:'Colour', type:g, color:true },
       { key:'pattern', label:'Pattern', pattern:true },
     ];
-    if (['Shirt','Jacket','Tie','Pants','Skirt','Dress'].includes(g))
+    if (['Shirt','Jacket','Tie','Pants','Skirt','Dress','Pocket Square'].includes(g))
       f.push({ key:'secondary', label:'Secondary colour', type:g+'-secondary', color:true, secondary:true });
     if (g === 'Pants' || g === 'Shoes')
       f.push({ key:'type', label:g+' type', type:g+'Type', istype:true });
@@ -385,7 +385,7 @@ async function fetchFor(field) {
     if (useWardrobe) return !!wardrobePick;
     if (garment === 'Watch') return strap !== '' && caseC !== '' && dial !== '';
     if (!color) return false;
-    if (['Shirt','Jacket','Tie','Pants','Skirt','Dress'].includes(garment) && pattern !== 'Plain' && !secondary) return false;
+    if (['Shirt','Jacket','Tie','Pants','Skirt','Dress','Pocket Square'].includes(garment) && pattern !== 'Plain' && !secondary) return false;
     if ((garment === 'Pants' || garment === 'Shoes') && !typeValue) return false;
     return true;
   }
@@ -483,7 +483,7 @@ async function fetchFor(field) {
               </div>
             {/if}
           </div></label>
-          {#if ['Shirt','Jacket','Tie','Pants','Skirt','Dress'].includes(garment)}
+          {#if ['Shirt','Jacket','Tie','Pants','Skirt','Dress','Pocket Square'].includes(garment)}
             <label>Pattern <div class="dropdown"><button class="dropdown-trigger" onclick={() => { const _n = !patternOpen; closeAllDropdowns(); patternOpen = _n; if (patternOpen) triggerPattern(); }} type="button">{$t('pattern_'+pattern.replace(/\s+/g,''))}</button>
               {#if patternOpen}
                 <div class="dropdown-panel">
@@ -493,7 +493,7 @@ async function fetchFor(field) {
               {/if}
             </div></label>
           {/if}
-          {#if pattern !== 'Plain' && ['Shirt','Jacket','Tie','Pants','Skirt','Dress'].includes(garment)}
+          {#if pattern !== 'Plain' && ['Shirt','Jacket','Tie','Pants','Skirt','Dress','Pocket Square'].includes(garment)}
             <label>{$t('secondary_label')} <div class="dropdown">
               <button class="dropdown-trigger" onclick={() => { const _n = !secondaryOpen; closeAllDropdowns(); secondaryOpen = _n; if (secondaryOpen) triggerSecondary(); }} type="button">{secondary ? $t('color_'+secondary.replace(/\s+/g,'')) : ($language === 'pl' ? 'Wybierz kolor' : 'Select')}</button>
               {#if secondaryOpen}
