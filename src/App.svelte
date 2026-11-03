@@ -74,7 +74,7 @@
   }
   let garments = $derived($occasion ? garmentList({ who: activeGender }, $occasion) : []);
   let selObj = $derived($selections);
-  let outfitScore = $derived(scoreOutfit(selObj, $occasion, activeGender));
+  let outfitScore = $derived(scoreOutfit(selObj, $occasion, activeGender, $language));
   let aiFitMan = $state(null);
   let aiFitWoman = $state(null);
   let aiFitLoading = $state(false);
@@ -114,8 +114,8 @@
   let singleDisplayScore = $derived(activeGender === 'woman' ? (aiFitWoman ?? outfitScore.score) : (aiFitMan ?? outfitScore.score));
   let manDisplayScore = $derived(aiFitMan ?? manScore.score);
   let womanDisplayScore = $derived(aiFitWoman ?? womanScore.score);  let outfitConflicts = $derived(conflictsByGarment(selObj, $occasion, activeGender));
-  let manScore = $derived(scoreOutfit(selObj, $occasion, 'man'));
-  let womanScore = $derived(scoreOutfit(selObj, $occasion, 'woman'));
+  let manScore = $derived(scoreOutfit(selObj, $occasion, 'man', $language));
+  let womanScore = $derived(scoreOutfit(selObj, $occasion, 'woman', $language));
   let manHasSelections = $derived(garmentsFor('man').some(g => selObj['man:'+g] && selObj['man:'+g].included !== false));
   let womanHasSelections = $derived(garmentsFor('woman').some(g => selObj['woman:'+g] && selObj['woman:'+g].included !== false));
 
