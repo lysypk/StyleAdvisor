@@ -4,6 +4,7 @@
   import { wardrobeItems } from './wardrobe.js';
   import { colourHexMap, defaultColors, watchStrapColors, watchCaseColors, watchDialColors, womenBlouseColors, womenDressColors, womenSkirtColors, womenPantsColors, womenShoesColors, womenBagColors, womenJewelryColors, patterns } from './data/colors.js';
   import { t } from './i18n.ts';
+import { get } from 'svelte/store';
   import { language } from './store.ts';
 import { activeGarmentModal } from './store.ts';
   import { typeCriteria } from './data/types.js';
@@ -17,11 +18,9 @@ let { garment, garmentKey = null, gender = null, optional = false, selections, o
   let svg = $derived((gender?.who === 'woman' && womenVariantMap[garment]) ? womenVariantMap[garment] : (svgMap[garment] || null));
 
   
-let currentLang = 'en';
-language.subscribe((l) => { currentLang = l; });
 const keyLabelsEn = { color:'Color', pattern:'Pattern', secondary:'Secondary Colour', strap:'Strap Colour', case:'Case Colour', dial:'Dial Colour', type:'Type', name:'Name', wardrobeItemId:null };
 const keyLabelsPl = { color:'Kolor', pattern:'Wzór', secondary:'Dodatkowy kolor', strap:'Kolor paska', case:'Kolor koperty', dial:'Kolor tarczy', type:'Typ', name:'Nazwa', wardrobeItemId:null };
-const keyLabel = (k) => { const map = currentLang === 'pl' ? keyLabelsPl : keyLabelsEn; return map[k] || k; };
+const keyLabel = (k, lang = 'en') => { const map = (lang === 'pl' || lang === 'pl') ? keyLabelsPl : keyLabelsEn; return map[k] || k; };
 function fieldsFor(g) {
     if (g === 'Watch') return [
       { key:'strap', label:'Strap colour', type:'WatchStrap', color:true },
@@ -398,17 +397,19 @@ async function fetchFor(field) {
   function renderValue(k, v) {
     const norm = String(v || '').replace(/[\s-]+/g, '');
     const prefix = (k === 'pattern') ? 'pattern_' : 'color_';
+    const lookup = get(t);
     if (k === 'color' || k === 'strap' || k === 'case' || k === 'dial' || k === 'secondary' || String(k).includes('color')) {
-      const translated = tr(prefix + norm);
+      const translated = lookup(prefix + norm);
       return translated === prefix + norm ? String(v ?? '') : translated;
     }
     if (k === 'pattern' && typeof v === 'string') {
-      const translated = tr('pattern_' + norm);
-      return translated === 'pattern_' + norm ? String(v) : translated;
+      const key = 'pattern_' + norm;
+      const translated = lookup(key);
+      return translated === key ? String(v) : translated;
     }
     if (k === 'type' && typeof v === 'string') {
       const key = 'type_' + norm;
-      const translated = tr(key);
+      const translated = lookup(key);
       return translated === key ? String(v) : translated;
     }
     return String(v ?? '');
@@ -424,14 +425,14 @@ async function fetchFor(field) {
     <h3 class="name">{$t('garment_' + garment.replace(/\s+/g, ''))}</h3>
   </div>
   {#if Object.keys(sel).length && sel.included !== false}
-    <div class="summary">{keyLabel('color')}: {renderValue('color', sel.color || '')}</div>
+    <div class="summary">{keyLabel('color', $language)}: {renderValue('color', sel.color || '')}</div>
   {/if}
   {#if Object.keys(sel).length && sel.included !== false}
     <div class="summary">
       {#each Object.entries(sel).filter(([k,v]) => k !== 'included' && k !== 'gender' && k !== 'wardrobeItemId' && v !== null && v !== '' && !((garment==='Shoes' || garment==='Belt' || garment==='Handbag' || garment==='Jewelry') && k==='pattern')) as [k,v], i}
         {#if i>0} • {/if}
         {#if k==='color'||k==='strap'||k==='case'||k==='dial'||k==='secondary'}<span class="swatch" style="background:{colourHexMap[v]||'#888'}"></span>{/if}
-        {keyLabel(k)}: {renderValue(k,v)}
+        {keyLabel(k, $language)}: {renderValue(k,v)}
       {/each}
     </div>
   {/if}

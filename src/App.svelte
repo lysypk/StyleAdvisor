@@ -14,10 +14,10 @@
 
   let keyLabelLang = 'en';
   language.subscribe((l) => { keyLabelLang = l; });
-  const keyLabel = (k) => ({
-    en: { color:'Color', pattern:'Pattern', secondary:'Secondary Color', strap:'Strap Color', case:'Case Color', dial:'Dial Color', type:'Type', name:'Name', wardrobeItemId:null },
-    pl: { color:'Kolor', pattern:'Wzór', secondary:'Dodatkowy kolor', strap:'Kolor paska', case:'Kolor koperty', dial:'Kolor tarczy', type:'Typ', name:'Nazwa', wardrobeItemId:null }
-  })[keyLabelLang || 'en'][k] || k;
+  const keyLabel = (lang, k) => ({
+      en: { color:'Color', pattern:'Pattern', secondary:'Secondary Color', strap:'Strap Color', case:'Case Colour', dial:'Dial Colour', type:'Type', name:'Name', wardrobeItemId:null },
+      pl: { color:'Kolor', pattern:'Wzór', secondary:'Dodatkowy kolor', strap:'Kolor paska', case:'Kolor koperty', dial:'Kolor tarczy', type:'Typ', name:'Nazwa', wardrobeItemId:null }
+    })[lang || 'en'][k] || k;
   let activeSide = $state('man');
   let view = $state('outfit');
   const activeGender = $derived($gender?.who === 'couple' ? activeSide : ($gender?.who || 'man'));
@@ -119,11 +119,16 @@
   let manHasSelections = $derived(garmentsFor('man').some(g => selObj['man:'+g] && selObj['man:'+g].included !== false));
   let womanHasSelections = $derived(garmentsFor('woman').some(g => selObj['woman:'+g] && selObj['woman:'+g].included !== false));
 
-  function translateChipValue(k, v) {
+  function translateChipValue(lang, k, v) {
     const lookup = get(t);
     let prefix = '';
     if (k === 'pattern') prefix = 'pattern_';
     else if (k === 'color' || k === 'strap' || k === 'case' || k === 'dial' || k === 'secondary' || String(k).includes('color')) prefix = 'color_';
+    if (k === 'type') {
+      const key = 'type_' + String(v ?? '').replace(/[\s-]+/g, '');
+      const out = lookup(key);
+      return out === key ? String(v ?? '') : out;
+    }
     if (k === 'type') {
       const key = 'type_' + String(v ?? '').replace(/[\s-]+/g, '');
       const out = lookup(key);
@@ -216,7 +221,7 @@
             {#if selObj['man:'+g] && selObj['man:'+g].included !== false}
               <div class="chip">
                 <strong>{$t(`garment_${g.replace(/\s+/g,'')}`)}</strong>
-                <span class="chip-details">{Object.entries(selObj['man:'+g]).filter(([k,v]) => k !== 'included' && k !== 'gender' && k !== 'wardrobeItemId' && v !== null && v !== '' && !((g==='Shoes' || g==='Belt' || g==='Handbag' || g==='Jewelry') && k==='pattern')).map(([k,v]) => keyLabel(k) + ': ' + translateChipValue(k, v)).join(', ')}</span>
+                <span class="chip-details">{Object.entries(selObj['man:'+g]).filter(([k,v]) => k !== 'included' && k !== 'gender' && k !== 'wardrobeItemId' && v !== null && v !== '' && !((g==='Shoes' || g==='Belt' || g==='Handbag' || g==='Jewelry') && k==='pattern')).map(([k,v]) => keyLabel($language, k) + ': ' + translateChipValue($language, k, v)).join(', ')}</span>
               </div>
             {/if}
           {/each}
@@ -238,7 +243,7 @@
             {#if selObj['woman:'+g] && selObj['woman:'+g].included !== false}
               <div class="chip">
                 <strong>{$t(`garment_${g.replace(/\s+/g,'')}`)}</strong>
-                <span class="chip-details">{Object.entries(selObj['woman:'+g]).filter(([k,v]) => k !== 'included' && k !== 'gender' && k !== 'wardrobeItemId' && v !== null && v !== '' && !((g==='Shoes' || g==='Belt' || g==='Handbag' || g==='Jewelry') && k==='pattern')).map(([k,v]) => keyLabel(k) + ': ' + translateChipValue(k, v)).join(', ')}</span>
+                <span class="chip-details">{Object.entries(selObj['woman:'+g]).filter(([k,v]) => k !== 'included' && k !== 'gender' && k !== 'wardrobeItemId' && v !== null && v !== '' && !((g==='Shoes' || g==='Belt' || g==='Handbag' || g==='Jewelry') && k==='pattern')).map(([k,v]) => keyLabel($language, k) + ': ' + translateChipValue($language, k, v)).join(', ')}</span>
               </div>
             {/if}
           {/each}
@@ -262,7 +267,7 @@
           {#each selectedItems as g}
             <div class="chip">
               <strong>{$t('garment_' + g.replace(/\s+/g,''))}</strong>
-              <span class="chip-details">{Object.entries(selObj[keyOf(g)]).filter(([k,v]) => k !== 'included' && k !== 'wardrobeItemId' && v !== null && v !== '' && !((g==='Shoes' || g==='Belt' || g==='Handbag' || g==='Jewelry') && k==='pattern')).map(([k,v]) => keyLabel(k) + ': ' + translateChipValue(k, v)).join(', ')}</span>
+              <span class="chip-details">{Object.entries(selObj[keyOf(g)]).filter(([k,v]) => k !== 'included' && k !== 'wardrobeItemId' && v !== null && v !== '' && !((g==='Shoes' || g==='Belt' || g==='Handbag' || g==='Jewelry') && k==='pattern')).map(([k,v]) => keyLabel($language, k) + ': ' + translateChipValue($language, k, v)).join(', ')}</span>
             </div>
           {/each}
         </div>
