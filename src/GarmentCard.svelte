@@ -255,6 +255,7 @@ function openModal() {
   open = true;
   init();
 }
+$effect(() => { if (secondary && secondary === color) secondary = ''; });
 
   function typeKey() {
     const g = gender?.who || 'man';
@@ -386,6 +387,7 @@ async function fetchFor(field) {
     if (useWardrobe) return !!wardrobePick;
     if (garment === 'Watch') return strap !== '' && caseC !== '' && dial !== '';
     if (!color) return false;
+    if (secondary && secondary === color) return false;
     if (['Shirt','Jacket','Tie','Pants','Skirt','Dress','Pocket Square'].includes(garment) && pattern !== 'Plain' && !secondary) return false;
     if ((garment === 'Pants' || garment === 'Shoes') && !typeValue) return false;
     return true;
@@ -478,8 +480,8 @@ async function fetchFor(field) {
               <div class="dropdown-panel">
                 {#if loadingColor}<div class="dropdown-option">{$t('loading')}</div>
                 {:else}
-                  {#each optsColor as o}<button class="dropdown-option" onclick={() => { color = o.name; colorOpen=false; }} type="button"><span class="swatch" style="background:{colourHexMap[o.name]||'#888'}"></span> {$t('color_'+o.name.replace(/\s+/g,''))}{o.prob !== null ? ' ' + o.prob + '%' : ''}</button>{/each}
-                  {#if !optsColor.length}{#each defaultColors as c}<button class="dropdown-option" onclick={() => { color = c; colorOpen=false; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}{/if}
+                  {#each optsColor.filter(o => o.name !== secondary) as o}<button class="dropdown-option" onclick={() => { color = o.name; colorOpen=false; }} type="button"><span class="swatch" style="background:{colourHexMap[o.name]||'#888'}"></span> {$t('color_'+o.name.replace(/\s+/g,''))}{o.prob !== null ? ' ' + o.prob + '%' : ''}</button>{/each}
+                  {#if !optsColor.length}{#each defaultColors.filter(c => c !== secondary) as c}<button class="dropdown-option" onclick={() => { color = c; colorOpen=false; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}{/if}
                 {/if}
               </div>
             {/if}
@@ -499,8 +501,8 @@ async function fetchFor(field) {
               <button class="dropdown-trigger" onclick={() => { const _n = !secondaryOpen; closeAllDropdowns(); secondaryOpen = _n; if (secondaryOpen) triggerSecondary(); }} type="button">{secondary ? $t('color_'+secondary.replace(/\s+/g,'')) : ($language === 'pl' ? 'Wybierz kolor' : 'Select')}</button>
               {#if secondaryOpen}
                 <div class="dropdown-panel">
-                  {#each optsSecondary as o}<button class="dropdown-option" onclick={() => { secondary = o.name; secondaryOpen=false; }} type="button"><span class="swatch" style="background:{colourHexMap[o.name]||'#888'}"></span> {$t('color_'+o.name.replace(/\s+/g,''))}{o.prob !== null ? ' ' + o.prob + '%' : ''}</button>{/each}
-                  {#if !optsSecondary.length}{#each defaultColors as c}<button class="dropdown-option" onclick={() => { secondary = c; secondaryOpen=false; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}{/if}
+                  {#each optsSecondary.filter(o => o.name !== color) as o}<button class="dropdown-option" onclick={() => { secondary = o.name; secondaryOpen=false; }} type="button"><span class="swatch" style="background:{colourHexMap[o.name]||'#888'}"></span> {$t('color_'+o.name.replace(/\s+/g,''))}{o.prob !== null ? ' ' + o.prob + '%' : ''}</button>{/each}
+                  {#if !optsSecondary.length}{#each defaultColors.filter(c => c !== color) as c}<button class="dropdown-option" onclick={() => { secondary = c; secondaryOpen=false; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}{/if}
                 </div>
               {/if}
             </div></label>
