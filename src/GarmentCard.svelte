@@ -254,6 +254,7 @@ function openModal() {
   open = true;
   init();
 }
+$effect(() => { console.log('[GC lang]', $language, 'grey=', get(t)('color_Grey')); });
 $effect(() => { if (secondary && secondary === color) secondary = ''; });
 
   function typeKey() {
@@ -425,14 +426,14 @@ async function fetchFor(field) {
     <h3 class="name">{$t('garment_' + garment.replace(/\s+/g, ''))}</h3>
   </div>
   {#if Object.keys(sel).length && sel.included !== false}
-    <div class="summary">{keyLabel('color', $language)}: {renderValue('color', sel.color || '')}</div>
+    <div class="summary">{keyLabel('color', $language)}: {renderValue('color', sel.color || '', $language)}</div>
   {/if}
   {#if Object.keys(sel).length && sel.included !== false}
     <div class="summary">
       {#each Object.entries(sel).filter(([k,v]) => k !== 'included' && k !== 'gender' && k !== 'wardrobeItemId' && v !== null && v !== '' && !((garment==='Shoes' || garment==='Belt' || garment==='Handbag' || garment==='Jewelry') && k==='pattern')) as [k,v], i}
         {#if i>0} • {/if}
         {#if k==='color'||k==='strap'||k==='case'||k==='dial'||k==='secondary'}<span class="swatch" style="background:{colourHexMap[v]||'#888'}"></span>{/if}
-        {keyLabel(k, $language)}: {renderValue(k,v)}
+        {keyLabel(k, $language)}: {renderValue(k, v, $language)}
       {/each}
     </div>
   {/if}
