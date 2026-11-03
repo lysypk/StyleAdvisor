@@ -22,5 +22,3 @@ export const womenPantsColors = ['Navy','Black','Grey','Charcoal','Beige'];
 export const womenShoesColors = ['Black','Navy','Nude','Brown','Silver','Gold'];
 export const womenBagColors = ['Black','Navy','Beige','Burgundy','White'];
 export const womenJewelryColors = ['Silver','Gold','Rose Gold','Pearl','Black'];
-
-export const allColors = ['Red','White','Black','Blue','Grey','Green','Yellow','Brown','Purple','Navy','Charcoal','Silver','Royal Blue','Gold'];
