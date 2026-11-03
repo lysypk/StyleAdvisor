@@ -1,13 +1,16 @@
+import { t } from '../i18n.ts';
+import { get as getStore } from 'svelte/store';
+
 function addConflict(conflicts, g, label) {
   if (!g) return;
   conflicts[g] = conflicts[g] || [];
   if (!conflicts[g].includes(label)) conflicts[g].push(label);
 }
-export function scoreOutfit(selMap, occasion, who = 'man', lang = 'en') {
+export function scoreOutfit(selMap, occasion, who = 'man') {
   const map = selMap || {};
   const get = (g) => map[`${who}:${g}`];
   const warnings = [];
-  const pl = lang === 'pl';
+  const tr = (key) => getStore(t)(key);
   let score = 100;
   const category = occasion?.category || '';
 
@@ -17,7 +20,7 @@ export function scoreOutfit(selMap, occasion, who = 'man', lang = 'en') {
     const beltColor = belt.color;
     const shoeColor = shoes.color;
     if (beltColor && shoeColor && beltColor !== shoeColor) {
-      warnings.push(pl ? 'Pasek i buty powinny pasować kolorem.' : 'Belt and shoes should usually match in colour.');
+      warnings.push(tr('warning_belt_shoes'));
       score -= 12;
     }
   }
@@ -25,7 +28,7 @@ export function scoreOutfit(selMap, occasion, who = 'man', lang = 'en') {
   const namedGarments = ['Shirt', 'Jacket', 'Tie', 'Pants', 'Skirt', 'Blouse', 'Dress'];
   const patterns = namedGarments.map(get).filter((s) => s && s.included !== false && s.pattern && s.pattern !== 'Plain');
   if (patterns.length >= 2) {
-    warnings.push(pl ? 'Wiele elementów ma wzór; zachowaj tylko jeden wyrazisty wzór, żeby uniknąć chaosu.' : 'Multiple garments are patterned; keep only one bold pattern to avoid clashes.');
+    warnings.push(tr('warning_multiple_patterns'));
     score -= 10;
   }
 
@@ -34,7 +37,7 @@ export function scoreOutfit(selMap, occasion, who = 'man', lang = 'en') {
     if (tie && tie.included !== false) {
       const tieColor = String(tie.color || '').toLowerCase();
       if (!['black', 'charcoal', 'navy', 'burgundy'].includes(tieColor)) {
-        warnings.push(pl ? 'Krawat powinien być ciemny w stylizacji na pogrzeb.' : 'Tie should be dark for a funeral outfit.');
+        warnings.push(tr('warning_funeral_tie'));
         score -= 20;
       }
     }
@@ -43,8 +46,8 @@ export function scoreOutfit(selMap, occasion, who = 'man', lang = 'en') {
       if (s && s.included !== false) {
         const c = String(s.color || '').toLowerCase();
         if (c && !['black', 'charcoal', 'navy', 'grey', 'white'].includes(c)) {
-        const name = pl ? ({ Shirt: 'Koszula', Blouse: 'Bluzka', Jacket: 'Marynarka' }[g] || g) : g;
-        warnings.push(pl ? `${name}: kolor powinien być stonowany na pogrzeb.` : g + ' colour should stay somber for a funeral.');
+        const name = tr(`garment_${g}`);
+        warnings.push(tr('warning_funeral_colour').replace('{garment}', name));
           score -= 8;
           break;
         }
@@ -56,7 +59,7 @@ export function scoreOutfit(selMap, occasion, who = 'man', lang = 'en') {
   if (watch && watch.included !== false && shoes && shoes.color) {
     const strap = watch.strap;
     if (strap && strap !== shoes.color && !['Silver', 'Gold', 'Black'].includes(strap)) {
-      warnings.push(pl ? 'Pasek zegarka powinien współgrać z kolorem butów lub paska.' : 'Watch strap should complement shoes or belt tones.');
+      warnings.push(tr('warning_watch_strap'));
       score -= 8;
     }
   }

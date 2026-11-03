@@ -116,6 +116,11 @@ const en: Record<string, string> = {
   color_Ivory: 'Ivory', color_Beige: 'Beige', color_Emerald: 'Emerald', color_Burgundy: 'Burgundy',
   color_Sapphire: 'Sapphire', color_PastelPink: 'Pastel Pink', color_PastelBlue: 'Pastel Blue',
   color_FloralPrint: 'Floral Print', color_Nude: 'Nude', color_RoseGold: 'Rose Gold', color_Pearl: 'Pearl',
+  warning_belt_shoes: 'Belt and shoes should usually match in colour.',
+  warning_multiple_patterns: 'Multiple garments are patterned; keep only one bold pattern to avoid clashes.',
+  warning_funeral_tie: 'Tie should be dark for a funeral outfit.',
+  warning_funeral_colour: '{garment} colour should stay somber for a funeral.',
+  warning_watch_strap: 'Watch strap should complement shoes or belt tones.',
 };
 
 
@@ -185,6 +190,11 @@ const pl: Record<string, string> = {
   color_Ivory: 'Kości słoniowej', color_Beige: 'Beżowy', color_Emerald: 'Szmaragdowy', color_Burgundy: 'Bordowy',
   color_Sapphire: 'Szafirowy', color_PastelPink: 'Pastelowy róż', color_PastelBlue: 'Pastelowy niebieski',
   color_FloralPrint: 'Wzór kwiatowy', color_Nude: 'Nagości', color_RoseGold: 'Różowe złoto', color_Pearl: 'Perłowy',
+  warning_belt_shoes: 'Pasek i buty powinny zwykle pasować kolorem.',
+  warning_multiple_patterns: 'Wiele elementów ma wzór; zachowaj tylko jeden wyrazisty wzór, aby uniknąć chaosu.',
+  warning_funeral_tie: 'Krawat powinien być ciemny w stylizacji na pogrzeb.',
+  warning_funeral_colour: '{garment}: kolor powinien być stonowany na pogrzeb.',
+  warning_watch_strap: 'Pasek zegarka powinien współgrać z kolorem butów lub paska.',
   pattern_Plain: 'Gładki', pattern_Stripes: 'Paski', pattern_Checks: 'Kratka', pattern_Dots: 'Kropki',
   garment_Shirt: 'Koszula', garment_Jacket: 'Marynarka', garment_Tie: 'Krawat', garment_Belt: 'Pasek', garment_Watch: 'Zegarek',
   garment_Pants: 'Spodnie', garment_Shoes: 'Buty', garment_Blouse: 'Bluzka', garment_Skirt: 'Spódnica', garment_Dress: 'Sukienka',

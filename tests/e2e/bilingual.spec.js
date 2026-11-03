@@ -116,4 +116,38 @@ for (const [code, L] of Object.entries(LANGS)) {
     await page.getByRole('button', { name: 'EN', exact: true }).click();
     await expect(page.getByText('Shirt')).toBeVisible();
   });
+  test(`${code}: scenario6 belt/shoes colour mismatch warning`, async ({ page }) => {
+    const cfg = code === 'en'
+      ? { occ: 'Funeral', gender: 'Man', belt: 'Belt', shoes: 'Shoes', blue: /Blue/, yellow: /Yellow/, warning: /Belt and shoes should usually match in colour/ }
+      : { occ: 'Pogrzeb', gender: 'Mężczyzna', belt: 'Pasek', shoes: 'Buty', blue: /Niebieski/, yellow: /Żółty/, warning: /Pasek i buty powinny zwykle pasować kolorem/ };
+
+    await page.goto('/');
+    if (code === 'pl') await page.getByRole('button', { name: 'PL', exact: true }).click();
+    await page.getByRole('button', { name: cfg.occ }).click();
+    await page.getByRole('button', { name: cfg.gender, exact: true }).click();
+
+    await page.locator('.card').filter({ hasText: cfg.belt }).locator('button.svg').click();
+    await page.locator('.modal .dropdown-trigger').nth(0).click();
+    const beltColorBtn = page.locator('.modal .dropdown-panel .dropdown-option', { hasText: cfg.blue }).first();
+    await beltColorBtn.waitFor({ state: 'visible', timeout: 30000 });
+    await beltColorBtn.click();
+    await page.locator('.modal .primary').first().click();
+    await expect(page.locator('.modal')).toHaveCount(0);
+
+    await page.locator('.card').filter({ hasText: cfg.shoes }).locator('button.svg').click();
+    await page.locator('.modal .dropdown-trigger').nth(0).click();
+    const shoeColorBtn = page.locator('.modal .dropdown-panel .dropdown-option', { hasText: cfg.yellow }).first();
+    await shoeColorBtn.waitFor({ state: 'visible', timeout: 30000 });
+    await shoeColorBtn.click();
+    await page.locator('.modal .dropdown-trigger').filter({ hasText: /Wybierz|Select/ }).click();
+    await page.locator('.modal .dropdown-panel .dropdown-option').first().waitFor({ state: 'visible', timeout: 30000 });
+    await page.locator('.modal .dropdown-panel .dropdown-option').first().click();
+    await expect(page.locator('.modal .primary').first()).toBeEnabled({ timeout: 30000 });
+    await page.locator('.modal .primary').first().click();
+    await expect(page.locator('.modal')).toHaveCount(0);
+
+    await page.waitForTimeout(500);
+    await expect(page.getByText(cfg.warning)).toBeVisible({ timeout: 15000 });
+  });
+
 }
