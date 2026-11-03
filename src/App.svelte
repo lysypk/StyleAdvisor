@@ -211,7 +211,7 @@
             {#if selObj['man:'+g] && selObj['man:'+g].included !== false}
               <div class="chip">
                 <strong>{$t(`garment_${g.replace(/\s+/g,'')}`)}</strong>
-                <span class="chip-details">{Object.entries(selObj['man:'+g]).filter(([k,v]) => k !== 'included' && k !== 'gender' && k !== 'wardrobeItemId' && v !== null && v !== '' && !(g==='Shoes' && k==='pattern')).map(([k,v]) => keyLabel(k) + ': ' + translateChipValue(k, v)).join(', ')}</span>
+                <span class="chip-details">{Object.entries(selObj['man:'+g]).filter(([k,v]) => k !== 'included' && k !== 'gender' && k !== 'wardrobeItemId' && v !== null && v !== '' && !((g==='Shoes' || g==='Belt') && k==='pattern')).map(([k,v]) => keyLabel(k) + ': ' + translateChipValue(k, v)).join(', ')}</span>
               </div>
             {/if}
           {/each}
@@ -233,7 +233,7 @@
             {#if selObj['woman:'+g] && selObj['woman:'+g].included !== false}
               <div class="chip">
                 <strong>{$t(`garment_${g.replace(/\s+/g,'')}`)}</strong>
-                <span class="chip-details">{Object.entries(selObj['woman:'+g]).filter(([k,v]) => k !== 'included' && k !== 'gender' && k !== 'wardrobeItemId' && v !== null && v !== '' && !(g==='Shoes' && k==='pattern')).map(([k,v]) => keyLabel(k) + ': ' + translateChipValue(k, v)).join(', ')}</span>
+                <span class="chip-details">{Object.entries(selObj['woman:'+g]).filter(([k,v]) => k !== 'included' && k !== 'gender' && k !== 'wardrobeItemId' && v !== null && v !== '' && !((g==='Shoes' || g==='Belt') && k==='pattern')).map(([k,v]) => keyLabel(k) + ': ' + translateChipValue(k, v)).join(', ')}</span>
               </div>
             {/if}
           {/each}
@@ -257,7 +257,7 @@
           {#each selectedItems as g}
             <div class="chip">
               <strong>{$t('garment_' + g.replace(/\s+/g,''))}</strong>
-              <span class="chip-details">{Object.entries(selObj[keyOf(g)]).filter(([k,v]) => k !== 'included' && k !== 'wardrobeItemId' && v !== null && v !== '' && !(g==='Shoes' && k==='pattern')).map(([k,v]) => keyLabel(k) + ': ' + translateChipValue(k, v)).join(', ')}</span>
+              <span class="chip-details">{Object.entries(selObj[keyOf(g)]).filter(([k,v]) => k !== 'included' && k !== 'wardrobeItemId' && v !== null && v !== '' && !((g==='Shoes' || g==='Belt') && k==='pattern')).map(([k,v]) => keyLabel(k) + ': ' + translateChipValue(k, v)).join(', ')}</span>
             </div>
           {/each}
         </div>

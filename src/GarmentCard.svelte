@@ -366,6 +366,7 @@ async function fetchFor(field) {
       return;
     }
     const out = { color, pattern, secondary, included };
+    if (garment === 'Belt') delete out.pattern;
     if ('gender' in out) delete out.gender;
     if ('wardrobeItemId' in out) delete out.wardrobeItemId;
     if (secondary === '') delete out.secondary;
@@ -420,7 +421,7 @@ async function fetchFor(field) {
   {/if}
   {#if Object.keys(sel).length && sel.included !== false}
     <div class="summary">
-      {#each Object.entries(sel).filter(([k,v]) => k !== 'included' && k !== 'gender' && k !== 'wardrobeItemId' && v !== null && v !== '' && !(garment==='Shoes' && k==='pattern')) as [k,v], i}
+      {#each Object.entries(sel).filter(([k,v]) => k !== 'included' && k !== 'gender' && k !== 'wardrobeItemId' && v !== null && v !== '' && !((garment==='Shoes' || garment==='Belt') && k==='pattern')) as [k,v], i}
         {#if i>0} • {/if}
         {#if k==='color'||k==='strap'||k==='case'||k==='dial'||k==='secondary'}<span class="swatch" style="background:{colourHexMap[v]||'#888'}"></span>{/if}
         {keyLabel(k)}: {renderValue(k,v)}
