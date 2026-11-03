@@ -468,8 +468,11 @@ async function fetchFor(field) {
           </div></label>
         {/if}
       {:else}
-        {#if !useWardrobe}
-          <label>{$t('color_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => { const _n = !colorOpen; closeAllDropdowns(); colorOpen = _n; if (colorOpen) triggerColor(); }} type="button">{$t('color_'+color.replace(/\s+/g,''))}</button>
+        {#if optional && !included}
+          <p style="color:var(--muted)">{$t('garment_excluded')}</p>
+        {:else}
+          {#if !useWardrobe}
+            <label>{$t('color_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => { const _n = !colorOpen; closeAllDropdowns(); colorOpen = _n; if (colorOpen) triggerColor(); }} type="button">{$t('color_'+color.replace(/\s+/g,''))}</button>
             {#if colorOpen}
               <div class="dropdown-panel">
                 {#if loadingColor}<div class="dropdown-option">{$t('loading')}</div>
@@ -516,6 +519,7 @@ async function fetchFor(field) {
             </div></label>
           {/if}
         {/if}
+      {/if}
       {/if}
     {/if}
     {#if optional}<label><input type="checkbox" bind:checked={included} /> {$t('include')}</label>{/if}
