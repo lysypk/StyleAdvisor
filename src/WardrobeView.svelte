@@ -51,7 +51,7 @@ let type = $state('Shirt');
     return [item.name, item.type, item.color, item.strap, item.case, item.dial, item.itemType]
       .some((v) => String(v || '').toLowerCase().includes(q));
   }));
-  let typeOpts = $derived.by(() => type === 'Pants' ? (g === 'woman' ? ['Wide-Leg','Straight','Tapered','Palazzo','Bootcut'] : ['Jeans','Chinos','Dress','Slim','Cargo']) : type === 'Shoes' ? (g === 'woman' ? ['Pump','Ballet Flat','Loafer','Sandal','Wedge','Ankle Boot','Closed-Toe Flat'] : ['Oxford','Derby','Loafer','Monk']) : type === 'Skirt' ? ['Midi','Pencil','A-Line','Pleated','Maxi','Mini'] : []);
+  let typeOpts = $derived.by(() => type === 'Pants' ? (g === 'woman' ? ['Wide-Leg','Straight','Tapered','Palazzo','Bootcut','Skinny','Flared','Culottes','Cigarette','Cargo','Joggers','Leggings'] : ['Jeans','Chinos','Dress','Slim','Cargo','Corduroy','Linen','Wool','Joggers','Suit','Tailored','Leather']) : type === 'Shoes' ? (g === 'woman' ? ['Pump','Ballet Flat','Loafer','Sandal','Wedge','Ankle Boot','Closed-Toe Flat'] : ['Oxford','Derby','Loafer','Monk']) : type === 'Skirt' ? ['Midi','Pencil','A-Line','Pleated','Maxi','Mini','Wrap','Asymmetrical','Mermaid','Skater','Denim','Tulle'] : []);
   const menTypes = ['Shirt','Jacket','Tie','Belt','Watch','Pants','Shoes','Pocket Square'];
   const womenTypes = ['Blouse','Dress','Skirt','Pants','Shoes','Jacket','Handbag','Jewelry'];
   let availableTypes = $derived(g === 'woman' ? womenTypes : g === 'man' ? menTypes : []);
@@ -155,9 +155,9 @@ let type = $state('Shirt');
       await new Promise(r => setTimeout(r, 50));
       type = j1.type;
       await new Promise(r => setTimeout(r, 100));
-      const typeOptions = type === 'Pants' ? (g === 'woman' ? ['Wide-Leg','Straight','Tapered','Palazzo','Bootcut'] : ['Jeans','Chinos','Dress','Slim','Cargo'])
+      const typeOptions = type === 'Pants' ? (g === 'woman' ? ['Wide-Leg','Straight','Tapered','Palazzo','Bootcut','Skinny','Flared','Culottes','Cigarette','Cargo','Joggers','Leggings'] : ['Jeans','Chinos','Dress','Slim','Cargo','Corduroy','Linen','Wool','Joggers','Suit','Tailored','Leather'])
         : type === 'Shoes' ? (g === 'woman' ? ['Pump','Ballet Flat','Loafer','Sandal','Wedge','Ankle Boot','Closed-Toe Flat'] : ['Oxford','Derby','Loafer','Monk'])
-        : type === 'Skirt' ? ['Midi','Pencil','A-Line','Pleated','Maxi','Mini'] : [];
+        : type === 'Skirt' ? ['Midi','Pencil','A-Line','Pleated','Maxi','Mini','Wrap','Asymmetrical','Mermaid','Skater','Denim','Tulle'] : [];
       const prompt2 = type === 'Watch'
         ? 'Return JSON only with keys strap, case, dial (colour names from: Silver, Gold, Black, White, Blue, Brown, Grey, Red).'
         : ['Shirt','Jacket','Tie','Pants','Blouse','Skirt','Dress','Pocket Square'].includes(type)
@@ -210,9 +210,9 @@ let type = $state('Shirt');
       await new Promise(r => setTimeout(r, 100));
 
       // Pass 2: params
-      const typeOptions = type === 'Pants' ? (g === 'woman' ? ['Wide-Leg','Straight','Tapered','Palazzo','Bootcut'] : ['Jeans','Chinos','Dress','Slim','Cargo'])
+      const typeOptions = type === 'Pants' ? (g === 'woman' ? ['Wide-Leg','Straight','Tapered','Palazzo','Bootcut','Skinny','Flared','Culottes','Cigarette','Cargo','Joggers','Leggings'] : ['Jeans','Chinos','Dress','Slim','Cargo','Corduroy','Linen','Wool','Joggers','Suit','Tailored','Leather'])
         : type === 'Shoes' ? (g === 'woman' ? ['Pump','Ballet Flat','Loafer','Sandal','Wedge','Ankle Boot','Closed-Toe Flat'] : ['Oxford','Derby','Loafer','Monk'])
-        : type === 'Skirt' ? ['Midi','Pencil','A-Line','Pleated','Maxi','Mini'] : [];
+        : type === 'Skirt' ? ['Midi','Pencil','A-Line','Pleated','Maxi','Mini','Wrap','Asymmetrical','Mermaid','Skater','Denim','Tulle'] : [];
       const prompt2 = type === 'Watch'
         ? 'Return JSON only with keys strap, case, dial (colour names from: Silver, Gold, Black, White, Blue, Brown, Grey, Red).'
         : ['Shirt','Jacket','Tie','Pants','Blouse','Skirt','Dress','Pocket Square'].includes(type)
@@ -365,11 +365,11 @@ let type = $state('Shirt');
               {#if openField === 'itype'}
                 <div class="dropdown-panel">
                   {#if type === 'Pants'}
-                    {#each (g === 'woman' ? ['Wide-Leg','Straight','Tapered','Palazzo','Bootcut'] : ['Jeans','Chinos','Dress','Slim','Cargo']) as c}<button class="dropdown-option" onclick={() => { itype = c; openField=''; }} type="button">{$t('type_'+c.replace(/[\s-]+/g,''))}</button>{/each}
+                    {#each (g === 'woman' ? ['Wide-Leg','Straight','Tapered','Palazzo','Bootcut','Skinny','Flared','Culottes','Cigarette','Cargo','Joggers','Leggings'] : ['Jeans','Chinos','Dress','Slim','Cargo','Corduroy','Linen','Wool','Joggers','Suit','Tailored','Leather']) as c}<button class="dropdown-option" onclick={() => { itype = c; openField=''; }} type="button">{$t('type_'+c.replace(/[\s-]+/g,''))}</button>{/each}
                   {:else if type === 'Shoes'}
                     {#each (g === 'woman' ? ['Pump','Ballet Flat','Loafer','Sandal','Wedge','Ankle Boot','Closed-Toe Flat'] : ['Oxford','Derby','Loafer','Monk']) as c}<button class="dropdown-option" onclick={() => { itype = c; openField=''; }} type="button">{$t('type_'+c.replace(/[\s-]+/g,''))}</button>{/each}
                   {:else if type === 'Skirt'}
-                    {#each ['Midi','Pencil','A-Line','Pleated','Maxi','Mini'] as c}<button class="dropdown-option" onclick={() => { itype = c; openField=''; }} type="button">{$t('type_'+c.replace(/[\s-]+/g,''))}</button>{/each}
+                    {#each ['Midi','Pencil','A-Line','Pleated','Maxi','Mini','Wrap','Asymmetrical','Mermaid','Skater','Denim','Tulle'] as c}<button class="dropdown-option" onclick={() => { itype = c; openField=''; }} type="button">{$t('type_'+c.replace(/[\s-]+/g,''))}</button>{/each}
                   {/if}
                 </div>
               {/if}
