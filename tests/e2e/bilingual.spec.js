@@ -129,9 +129,13 @@ for (const [code, L] of Object.entries(LANGS)) {
     await page.locator('.card').filter({ hasText: cfg.belt }).locator('button.svg').click();
     await page.locator('.modal .dropdown-trigger').nth(0).click();
     await expect(page.locator('.modal .dropdown-panel')).not.toContainText(/Loading|Ładowanie/, { timeout: 45000 });
-    const beltLow = page.locator('.modal .dropdown-panel', { hasText: /Lower % options|Niższy % zdolności/ }).locator('button').first();
-    if (await beltLow.isVisible({ timeout: 2000 }).catch(() => false)) await beltLow.click();
+    const beltLow = page.locator('.modal .dropdown-panel', { hasText: /Lower % options|Niższy % dopasowania/ }).locator('button').first();
     const beltColorBtn = page.locator('.modal .dropdown-panel .dropdown-option', { hasText: cfg.blue }).first();
+    await Promise.race([
+      beltLow.waitFor({ state: 'visible', timeout: 45000 }).catch(() => {}),
+      beltColorBtn.waitFor({ state: 'visible', timeout: 45000 }).catch(() => {}),
+    ]);
+    if (await beltLow.isVisible({ timeout: 1000 }).catch(() => false)) await beltLow.click();
     await beltColorBtn.waitFor({ state: 'visible', timeout: 45000 });
     await beltColorBtn.click();
     await page.locator('.modal .primary').first().click();
@@ -140,9 +144,13 @@ for (const [code, L] of Object.entries(LANGS)) {
     await page.locator('.card').filter({ hasText: cfg.shoes }).locator('button.svg').click();
     await page.locator('.modal .dropdown-trigger').nth(0).click();
     await expect(page.locator('.modal .dropdown-panel')).not.toContainText(/Loading|Ładowanie/, { timeout: 45000 });
-    const shoeLow = page.locator('.modal .dropdown-panel', { hasText: /Lower % options|Niższy % zdolności/ }).locator('button').first();
-    if (await shoeLow.isVisible({ timeout: 2000 }).catch(() => false)) await shoeLow.click();
+    const shoeLow = page.locator('.modal .dropdown-panel', { hasText: /Lower % options|Niższy % dopasowania/ }).locator('button').first();
     const shoeColorBtn = page.locator('.modal .dropdown-panel .dropdown-option', { hasText: cfg.yellow }).first();
+    await Promise.race([
+      shoeLow.waitFor({ state: 'visible', timeout: 45000 }).catch(() => {}),
+      shoeColorBtn.waitFor({ state: 'visible', timeout: 45000 }).catch(() => {}),
+    ]);
+    if (await shoeLow.isVisible({ timeout: 1000 }).catch(() => false)) await shoeLow.click();
     await shoeColorBtn.waitFor({ state: 'visible', timeout: 45000 });
     await shoeColorBtn.click();
     await page.locator('.modal .dropdown-trigger').filter({ hasText: /Wybierz|Select/ }).click();
