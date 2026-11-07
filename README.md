@@ -15,7 +15,7 @@ Because the setup is easy and I'm lazy. Also the models run locally, so they're 
 ## Prerequisites
 - Node.js 18+ (includes npm)
 - (Optional for AI suggestions) Ollama installed locally
-- Ollama models: `ollama pull tev1:4b` and `ollama pull lfm3-vl:2b`
+- Ollama models: `ollama pull nimble-v3:9b` and `ollama pull lfm3-vl:2b`
 - A modern browser
 
 ## Run

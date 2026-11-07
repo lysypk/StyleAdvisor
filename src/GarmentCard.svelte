@@ -7,6 +7,7 @@
 import { get } from 'svelte/store';
   import { language } from './store.ts';
 import { activeGarmentModal } from './store.ts';
+  const AI_TEXT_MODEL = import.meta.env.VITE_AI_MODEL || 'nimble-v3:9b';
   import { typeCriteria } from './data/types.js';
   import { garmentSpecificRules, rulesFor } from './data/rules.js';
 let { garment, garmentKey = null, gender = null, optional = false, selections, occasion = null, conflicts = [] } = $props();
@@ -73,6 +74,9 @@ let values = {};
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 30000);
     setLoading(true);
+    const field = type === 'Pattern' ? 'pattern'
+      : (typeof type === 'string' && type.endsWith('Type')) ? 'type'
+      : 'color';
     const cacheKey = type + '::' + (gender?.who || 'man') + '::' + (occ()?.category || '') + ':' + (occ()?.variant || '') + '::' + garment;
     if (AI_SCORE_CACHE[cacheKey]) {
       const cached = AI_SCORE_CACHE[cacheKey].map((o) => ({ ...o }));
@@ -96,14 +100,14 @@ let values = {};
       }
       if (Object.keys(noulQuestions).length) {
         const payload = {
-          model: 'tev1:4b',
+          model: AI_TEXT_MODEL,
           state: JSON.stringify({ occasion: occ(), selections: $selections }),
           questions: noulQuestions,
-          rules: rulesFor(occ(), garment, $selections, gender)
+          rules: rulesFor(occ(), garment, $selections, gender, field)
         };
         const r = await tracedFetch('http://localhost:11434/v1/systemone', {
           method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload), signal: controller.signal
-        }, { name: 'choice-' + type, model: 'tev1:4b', garment });
+        }, { name: 'choice-' + type, model: AI_TEXT_MODEL, garment });
         const data = await r.json();
         const answers = data?.answers || {};
         const toDecimal = (v) => { const n = Number(v); if (!Number.isFinite(n)) return 0; return n > 1 ? n / 100 : n; };
@@ -139,10 +143,10 @@ let values = {};
         if (exclude && criteria[exclude]) delete criteria[exclude];
       }
       const payload = {
-        model: 'tev1:4b',
+        model: AI_TEXT_MODEL,
         state: JSON.stringify({ occasion: occ(), selections: $selections }),
         questions: { suggest: { type: 'choice', instructions: `For each candidate, return an independent 0-100 suitability score for this ${type} in this garment and occasion. Use only candidates from criteria. Return each probability as a decimal 0-1 (not 0-100). 100 means ideal; below 40 means wrong.`, criteria } },
-        rules: rulesFor(occ(), garment, $selections, gender)
+        rules: rulesFor(occ(), garment, $selections, gender, field)
       };
       const r = await tracedFetch('http://localhost:11434/v1/systemone', {
         method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload), signal: controller.signal
@@ -219,12 +223,12 @@ function triggerColor() { clearCache(); optsColor=[]; loadingColor=false; fetchC
         noulQuestions[key] = { type: 'noul', instructions: `Is saved ${garment} item ${itemNameByKey[key]} an excellent independent fit for this occasion and person? Score relative to zero, not relative to other items.`, criteria: { true: 'Excellent fit', false: 'Poor fit' } };
       }
       const payload = {
-        model: 'tev1:4b',
+        model: AI_TEXT_MODEL,
         state: JSON.stringify({ occasion: occ(), selections: $selections }),
         questions: noulQuestions,
         rules: rulesFor(occ(), garment, $selections, gender)
       };
-      const r = await tracedFetch('http://localhost:11434/v1/systemone', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload), signal: controller.signal }, { name: 'wardrobe-score', model: 'tev1:4b', garment });
+      const r = await tracedFetch('http://localhost:11434/v1/systemone', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload), signal: controller.signal }, { name: 'wardrobe-score', model: AI_TEXT_MODEL, garment });
       const data = await r.json();
       const answers = data?.answers || {};
       const toDecimal = (v) => { const n = Number(v); if (!Number.isFinite(n)) return 0; return n > 1 ? n / 100 : n; };
@@ -289,7 +293,7 @@ async function fetchFor(field) {
         if (type.endsWith('-secondary') && primary && criteria[primary]) delete criteria[primary];
       }
       const payload = {
-        model: 'tev1:4b',
+        model: AI_TEXT_MODEL,
         state: JSON.stringify({ occasion: occ, selections: values }),
         questions: {
           suggest: {

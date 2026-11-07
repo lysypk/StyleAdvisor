@@ -6,6 +6,7 @@
   import { occasion, gender, selections, activeGarmentModal } from './store.ts';
   import { tracedFetch } from './telemetry.js';
   import { onMount } from 'svelte';
+  const AI_TEXT_MODEL = import.meta.env.VITE_AI_MODEL || 'nimble-v3:9b';
   import './global.css';
   import GarmentCard from './GarmentCard.svelte';
   import Welcome from './Welcome.svelte';
@@ -89,7 +90,7 @@
         const r = await tracedFetch('http://localhost:11434/v1/systemone', {
           method: 'POST', headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            model: 'tev1:4b',
+            model: AI_TEXT_MODEL,
             state: JSON.stringify({ occasion: $occasion, selections: $selections }),
             questions: {
               man_fit: { type: 'noul', instructions: `Is the complete men's outfit suitable and coherent for the occasion?`, criteria: { true: 'Suitable', false: 'Not suitable' } },
@@ -97,7 +98,7 @@
             },
             rules: 'Evaluate dress code, colour harmony, pattern discipline, accessory matching.'
           })
-        }, { name: 'fit-score', model: 'tev1:4b' });
+        }, { name: 'fit-score', model: AI_TEXT_MODEL });
         const data = await r.json();
         const answers = data?.answers || {};
         const toDecimal = (v) => { const n = Number(v); if (!Number.isFinite(n)) return 0; return n > 1 ? n / 100 : n; };

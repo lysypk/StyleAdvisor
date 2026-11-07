@@ -11,7 +11,7 @@ export class GarmentModal {
 
   async _waitForLoaded() {
     const loading = this.page.locator('.dropdown-option', { hasText: /loading|ładowanie/i });
-    await loading.waitFor({ state: 'hidden', timeout: 10000 }).catch(() => {});
+    await loading.waitFor({ state: 'hidden', timeout: 60000 }).catch(() => {});
   }
 
   async selectColourByProbability() {
