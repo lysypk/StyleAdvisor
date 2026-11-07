@@ -20,7 +20,7 @@ wardrobeItems.subscribe(value => {
 });
 
 export function addItem(item) {
-  wardrobeItems.update(items => [...items, { id: crypto.randomUUID(), ...item }]);
+  wardrobeItems.update(items => [...items, { ...item, id: crypto.randomUUID() }]);
 }
 
 export function removeItem(id) {

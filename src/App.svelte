@@ -129,11 +129,6 @@
       const out = lookup(key);
       return out === key ? String(v ?? '') : out;
     }
-    if (k === 'type') {
-      const key = 'type_' + String(v ?? '').replace(/[\s-]+/g, '');
-      const out = lookup(key);
-      return out === key ? String(v ?? '') : out;
-    }
     if (!prefix) return String(v ?? '');
     const key = prefix + String(v ?? '').replace(/\s+/g, '');
     const out = lookup(key);
@@ -267,7 +262,7 @@
           {#each selectedItems as g}
             <div class="chip">
               <strong>{$t('garment_' + g.replace(/\s+/g,''))}</strong>
-              <span class="chip-details">{Object.entries(selObj[keyOf(g)]).filter(([k,v]) => k !== 'included' && k !== 'wardrobeItemId' && v !== null && v !== '' && !((g==='Shoes' || g==='Belt' || g==='Handbag' || g==='Jewelry') && k==='pattern')).map(([k,v]) => keyLabel($language, k) + ': ' + translateChipValue($language, k, v)).join(', ')}</span>
+              <span class="chip-details">{Object.entries(selObj[keyOf(g)]).filter(([k,v]) => k !== 'included' && k !== 'gender' && k !== 'wardrobeItemId' && v !== null && v !== '' && !((g==='Shoes' || g==='Belt' || g==='Handbag' || g==='Jewelry') && k==='pattern')).map(([k,v]) => keyLabel($language, k) + ': ' + translateChipValue($language, k, v)).join(', ')}</span>
             </div>
           {/each}
         </div>

@@ -73,7 +73,7 @@ let values = {};
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 30000);
     setLoading(true);
-    const cacheKey = type + '::' + (gender?.who || 'man') + '::' + String(occ() || '') + '::' + garment;
+    const cacheKey = type + '::' + (gender?.who || 'man') + '::' + (occ()?.category || '') + ':' + (occ()?.variant || '') + '::' + garment;
     if (AI_SCORE_CACHE[cacheKey]) {
       const cached = AI_SCORE_CACHE[cacheKey].map((o) => ({ ...o }));
       setOpts(cached);

@@ -2,7 +2,7 @@
   let { onback = () => {} } = $props();
   import { wardrobeItems, addItem, removeItem, updateItem, exportJson, importJsonText } from './wardrobe.js';
   import { tracedFetch } from './telemetry.js';
-  import { colourHexMap, defaultColors, watchStrapColors } from './data/colors.js';
+  import { colourHexMap, defaultColors, watchStrapColors, watchCaseColors, watchDialColors } from './data/colors.js';
   import { t } from './i18n.ts';
   import { language } from './store.ts';
   import { get } from 'svelte/store';
@@ -30,7 +30,7 @@ let type = $state('Shirt');
   let isWatch = $derived(type === 'Watch');
   let hasPattern = $derived(patternGarments.includes(type));
   let hasType = $derived(typeGarments.includes(type));
-  $effect(() => { type; g; color='White'; pattern='Plain'; secondary=''; itype=''; strap=''; caseC='Silver'; dial='White'; openField=''; });
+  $effect(() => { type; g; if (editingId) return; color='White'; pattern='Plain'; secondary=''; itype=''; strap=''; caseC='Silver'; dial='White'; openField=''; });
   let genderSelected = $derived(!!g);
   let formOpen = $state(false);
   let editingId = $state(null);
@@ -46,6 +46,7 @@ let type = $state('Shirt');
   let itemName = $state('');
   let nameValid = $derived(/^[A-Za-z0-9 ]{1,30}$/.test(itemName));
   let visibleWardrobeItems = $derived(($wardrobeItems || []).filter((item) => {
+    if (!item || typeof item !== 'object') return false;
     const q = wardrobeSearch.trim().toLowerCase();
     if (!q) return true;
     return [item.name, item.type, item.color, item.strap, item.case, item.dial, item.itemType]
@@ -95,6 +96,7 @@ let type = $state('Shirt');
     if (!file.type.startsWith('image/')) { photoError = $t('image_file_error'); e.target.value = ''; return; }
     if (file.size > 5 * 1024 * 1024) { photoError = $t('image_size_error'); e.target.value = ''; return; }
     const reader = new FileReader();
+    reader.onerror = () => { photoError = $t('image_load_error'); };
     reader.onload = () => {
       const img = new Image();
       img.onerror = () => { photoError = $t('image_load_error'); };
@@ -237,6 +239,7 @@ let type = $state('Shirt');
     const file = e.target.files?.[0];
     if (!file) return;
     const reader = new FileReader();
+    reader.onerror = () => { photoError = $t('image_load_error'); };
     reader.onload = () => { try { const res = importJsonText(reader.result); alert(`Imported ${res.imported} item(s); skipped ${res.skipped} invalid.` + (res.errors.length ? '\n' + res.errors.join('\n') : '')); } catch (err){ alert('Import failed: '+err.message);} };
     reader.readAsText(file);
     e.target.value = '';
@@ -350,8 +353,8 @@ let type = $state('Shirt');
       <label>{$t('type_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'type' ? '' : 'type')} disabled={!!editingId || !genderSelected} type="button">{type ? $t('garment_'+type.replace(/\s+/g,'')) : $t('select')}</button>{#if openField === 'type'}<div class="dropdown-panel">{#each availableTypes as v}<button class="dropdown-option" onclick={() => { type = v; openField=''; }} type="button">{$t('garment_'+v.replace(/\s+/g,''))}</button>{/each}</div>{/if}</div></label>
       {#if type === 'Watch'}
         <label>{$t('strap_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'strap' ? '' : 'strap')} disabled={!genderSelected} type="button"><span class="swatch" style="background:{colourHexMap[strap]||'#888'}"></span> {strap ? $t('color_'+strap.replace(/\s+/g,'')) : $t('select')}</button>{#if openField === 'strap'}<div class="dropdown-panel">{#each watchStrapColors as c}<button class="dropdown-option" onclick={() => { strap=c; openField=''; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}</div>{/if}</div></label>
-        <label>{$t('case_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'caseC' ? '' : 'caseC')} disabled={!genderSelected} type="button"><span class="swatch" style="background:{colourHexMap[caseC]||'#888'}"></span> {caseC ? $t('color_'+caseC.replace(/\s+/g,'')) : $t('select')}</button>{#if openField === 'caseC'}<div class="dropdown-panel">{#each ['Silver','Gold','Black'] as c}<button class="dropdown-option" onclick={() => { caseC=c; openField=''; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}</div>{/if}</div></label>
-        <label>{$t('dial_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'dial' ? '' : 'dial')} disabled={!genderSelected} type="button"><span class="swatch" style="background:{colourHexMap[dial]||'#888'}"></span> {dial ? $t('color_'+dial.replace(/\s+/g,'')) : $t('select')}</button>{#if openField === 'dial'}<div class="dropdown-panel">{#each ['White','Black','Blue','Silver','Gold'] as c}<button class="dropdown-option" onclick={() => { dial=c; openField=''; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}</div>{/if}</div></label>
+        <label>{$t('case_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'caseC' ? '' : 'caseC')} disabled={!genderSelected} type="button"><span class="swatch" style="background:{colourHexMap[caseC]||'#888'}"></span> {caseC ? $t('color_'+caseC.replace(/\s+/g,'')) : $t('select')}</button>{#if openField === 'caseC'}<div class="dropdown-panel">{#each watchCaseColors as c}<button class="dropdown-option" onclick={() => { caseC=c; openField=''; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}</div>{/if}</div></label>
+        <label>{$t('dial_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'dial' ? '' : 'dial')} disabled={!genderSelected} type="button"><span class="swatch" style="background:{colourHexMap[dial]||'#888'}"></span> {dial ? $t('color_'+dial.replace(/\s+/g,'')) : $t('select')}</button>{#if openField === 'dial'}<div class="dropdown-panel">{#each watchDialColors as c}<button class="dropdown-option" onclick={() => { dial=c; openField=''; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}</div>{/if}</div></label>
       {:else}
         <label>{$t('color_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'color' ? '' : 'color')} disabled={!genderSelected} type="button"><span class="swatch" style="background:{colourHexMap[color]||'#888'}"></span> {$t('color_'+color.replace(/\s+/g,''))}</button>{#if openField === 'color'}<div class="dropdown-panel">{#each defaultColors as c}<button class="dropdown-option" onclick={() => { color=c; openField=''; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}</div>{/if}</div></label>
         {#if hasPattern}
