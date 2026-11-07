@@ -2,7 +2,8 @@
   let { onback = () => {} } = $props();
   import { wardrobeItems, addItem, removeItem, updateItem, exportJson, importJsonText } from './wardrobe.js';
   import { tracedFetch } from './telemetry.js';
-  import { colourHexMap, defaultColors, watchStrapColors, watchCaseColors, watchDialColors } from './data/colors.js';
+  import { colourHexMap, defaultColors, watchStrapColors, watchCaseColors, watchDialColors, womenBlouseColors, womenDressColors, womenSkirtColors, womenPantsColors, womenShoesColors, womenBagColors, womenJewelryColors, patterns } from './data/colors.js';
+import { typeCriteria } from './data/types.js';
   import { t } from './i18n.ts';
   import { language } from './store.ts';
   import { get } from 'svelte/store';
@@ -52,7 +53,24 @@ let type = $state('Shirt');
     return [item.name, item.type, item.color, item.strap, item.case, item.dial, item.itemType]
       .some((v) => String(v || '').toLowerCase().includes(q));
   }));
-  let typeOpts = $derived.by(() => type === 'Pants' ? (g === 'woman' ? ['Wide-Leg','Straight','Tapered','Palazzo','Bootcut','Skinny','Flared','Culottes','Cigarette','Cargo','Joggers','Leggings'] : ['Jeans','Chinos','Dress','Slim','Cargo','Corduroy','Linen','Wool','Joggers','Suit','Tailored','Leather']) : type === 'Shoes' ? (g === 'woman' ? ['Pump','Ballet Flat','Loafer','Sandal','Wedge','Ankle Boot','Closed-Toe Flat','Stiletto','Block Heel','Knee-High Boot','Over-The-Knee Boot','Sneaker','Oxford','Espadrille','Mule','Slingback'] : ['Oxford','Derby','Loafer','Monk']) : type === 'Skirt' ? ['Midi','Pencil','A-Line','Pleated','Maxi','Mini','Wrap','Asymmetrical','Mermaid','Skater','Denim','Tulle'] : []);
+  let typeOpts = $derived.by(() => {
+    if (type === 'Pants') return Object.keys(g === 'woman' ? typeCriteria.WomenPantsType : typeCriteria.PantsType);
+    if (type === 'Shoes') return Object.keys(g === 'woman' ? typeCriteria.WomenShoesType : typeCriteria.ShoesType);
+    if (type === 'Skirt') return Object.keys(typeCriteria.WomenSkirtType);
+    return [];
+  });
+  function colorsFor(gender, garment) {
+    if (gender === 'woman') {
+      if (garment === 'Blouse') return womenBlouseColors;
+      if (garment === 'Dress') return womenDressColors;
+      if (garment === 'Skirt') return womenSkirtColors;
+      if (garment === 'Pants') return womenPantsColors;
+      if (garment === 'Shoes') return womenShoesColors;
+      if (garment === 'Handbag') return womenBagColors;
+      if (garment === 'Jewelry') return womenJewelryColors;
+    }
+    return defaultColors;
+  }
   const menTypes = ['Shirt','Jacket','Tie','Belt','Watch','Pants','Shoes','Pocket Square'];
   const womenTypes = ['Blouse','Dress','Skirt','Pants','Shoes','Jacket','Handbag','Jewelry'];
   let availableTypes = $derived(g === 'woman' ? womenTypes : g === 'man' ? menTypes : []);
@@ -356,10 +374,10 @@ let type = $state('Shirt');
         <label>{$t('case_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'caseC' ? '' : 'caseC')} disabled={!genderSelected} type="button"><span class="swatch" style="background:{colourHexMap[caseC]||'#888'}"></span> {caseC ? $t('color_'+caseC.replace(/\s+/g,'')) : $t('select')}</button>{#if openField === 'caseC'}<div class="dropdown-panel">{#each watchCaseColors as c}<button class="dropdown-option" onclick={() => { caseC=c; openField=''; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}</div>{/if}</div></label>
         <label>{$t('dial_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'dial' ? '' : 'dial')} disabled={!genderSelected} type="button"><span class="swatch" style="background:{colourHexMap[dial]||'#888'}"></span> {dial ? $t('color_'+dial.replace(/\s+/g,'')) : $t('select')}</button>{#if openField === 'dial'}<div class="dropdown-panel">{#each watchDialColors as c}<button class="dropdown-option" onclick={() => { dial=c; openField=''; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}</div>{/if}</div></label>
       {:else}
-        <label>{$t('color_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'color' ? '' : 'color')} disabled={!genderSelected} type="button"><span class="swatch" style="background:{colourHexMap[color]||'#888'}"></span> {$t('color_'+color.replace(/\s+/g,''))}</button>{#if openField === 'color'}<div class="dropdown-panel">{#each defaultColors as c}<button class="dropdown-option" onclick={() => { color=c; openField=''; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}</div>{/if}</div></label>
+        <label>{$t('color_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'color' ? '' : 'color')} disabled={!genderSelected} type="button"><span class="swatch" style="background:{colourHexMap[color]||'#888'}"></span> {$t('color_'+color.replace(/\s+/g,''))}</button>{#if openField === 'color'}<div class="dropdown-panel">{#each colorsFor(g, type) as c}<button class="dropdown-option" onclick={() => { color=c; openField=''; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}</div>{/if}</div></label>
         {#if hasPattern}
-        <label>{$t('pattern_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'pattern' ? '' : 'pattern')} disabled={!genderSelected} type="button">{$t('pattern_'+pattern.replace(/\s+/g,''))}</button>{#if openField === 'pattern'}<div class="dropdown-panel">{#each ['Plain','Stripes','Checks','Dots'] as c}<button class="dropdown-option" onclick={() => { pattern=c; openField=''; }} type="button">{$t('pattern_'+c)}</button>{/each}</div>{/if}</div></label>
-        {#if pattern !== 'Plain'}<label>{$t('secondary_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'secondary' ? '' : 'secondary')} disabled={!genderSelected} type="button"><span class="swatch" style="background:{colourHexMap[secondary]||'#ccc'}"></span> {secondary ? $t('color_'+secondary.replace(/\s+/g,'')) : $t('select')}</button>{#if openField === 'secondary'}<div class="dropdown-panel">{#each defaultColors as c}<button class="dropdown-option" onclick={() => { secondary=c; openField=''; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}</div>{/if}</div></label>{/if}
+        <label>{$t('pattern_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'pattern' ? '' : 'pattern')} disabled={!genderSelected} type="button">{$t('pattern_'+pattern.replace(/\s+/g,''))}</button>{#if openField === 'pattern'}<div class="dropdown-panel">{#each patterns as c}<button class="dropdown-option" onclick={() => { pattern=c; openField=''; }} type="button">{$t('pattern_'+c.replace(/\s+/g,''))}</button>{/each}</div>{/if}</div></label>
+        {#if pattern !== 'Plain'}<label>{$t('secondary_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => (openField = openField === 'secondary' ? '' : 'secondary')} disabled={!genderSelected} type="button"><span class="swatch" style="background:{colourHexMap[secondary]||'#ccc'}"></span> {secondary ? $t('color_'+secondary.replace(/\s+/g,'')) : $t('select')}</button>{#if openField === 'secondary'}<div class="dropdown-panel">{#each colorsFor(g, type).filter(c => c !== color) as c}<button class="dropdown-option" onclick={() => { secondary=c; openField=''; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}</div>{/if}</div></label>{/if}
         {/if}
         {#if hasType}
           <label>{$t('type_label')}
@@ -367,13 +385,7 @@ let type = $state('Shirt');
               <button class="dropdown-trigger" onclick={() => (openField = openField === 'itype' ? '' : 'itype')} disabled={!genderSelected} type="button">{itype ? $t('type_'+itype.replace(/[\s-]+/g,'')) : $t('select')}</button>
               {#if openField === 'itype'}
                 <div class="dropdown-panel">
-                  {#if type === 'Pants'}
-                    {#each (g === 'woman' ? ['Wide-Leg','Straight','Tapered','Palazzo','Bootcut','Skinny','Flared','Culottes','Cigarette','Cargo','Joggers','Leggings'] : ['Jeans','Chinos','Dress','Slim','Cargo','Corduroy','Linen','Wool','Joggers','Suit','Tailored','Leather']) as c}<button class="dropdown-option" onclick={() => { itype = c; openField=''; }} type="button">{$t('type_'+c.replace(/[\s-]+/g,''))}</button>{/each}
-                  {:else if type === 'Shoes'}
-                    {#each (g === 'woman' ? ['Pump','Ballet Flat','Loafer','Sandal','Wedge','Ankle Boot','Closed-Toe Flat','Stiletto','Block Heel','Knee-High Boot','Over-The-Knee Boot','Sneaker','Oxford','Espadrille','Mule','Slingback'] : ['Oxford','Derby','Loafer','Monk']) as c}<button class="dropdown-option" onclick={() => { itype = c; openField=''; }} type="button">{$t('type_'+c.replace(/[\s-]+/g,''))}</button>{/each}
-                  {:else if type === 'Skirt'}
-                    {#each ['Midi','Pencil','A-Line','Pleated','Maxi','Mini','Wrap','Asymmetrical','Mermaid','Skater','Denim','Tulle'] as c}<button class="dropdown-option" onclick={() => { itype = c; openField=''; }} type="button">{$t('type_'+c.replace(/[\s-]+/g,''))}</button>{/each}
-                  {/if}
+    {#each typeOpts as c}<button class="dropdown-option" onclick={() => { itype = c; openField=''; }} type="button">{$t('type_'+c.replace(/[\s-]+/g,''))}</button>{/each}
                 </div>
               {/if}
             </div>
