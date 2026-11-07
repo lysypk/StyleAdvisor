@@ -200,7 +200,7 @@ const pl: Record<string, string> = {
   pattern_label: 'Wzór',
   secondary_label: 'Kolor dodatkowy',
   use_wardrobe_only: 'Tylko garderoba',
-  include: 'Dołącz', lower_percent_options: 'Niższy % zdolności',
+  include: 'Dołącz', lower_percent_options: 'Niższy % dopasowania',
   download_template: 'Pobierz szablon',
   select: 'Wybierz', select_photo: 'Wybierz zdjęcie', unnamed_item: 'Element bez nazwy', photo_req: 'Akceptowane: pliki obrazu do 5 MB. JPEG, PNG lub WebP.',
   analyze: 'Analizuj',
