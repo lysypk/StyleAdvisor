@@ -100,6 +100,9 @@ Open http://localhost:6006. The app best-effort sends traces there and never blo
 
 ## Where the rules / data live
 - `src/data/rules.js`: occasion/garment guidance and rule text passed to Ollama.
+  - `GENDER_STYLING`: short gender-specific constraint appended to every Ollama suggestion request.
+  - `COLOUR_GUIDANCE`: global colour, pattern, type and fabric guidance appended to every suggestion request.
+  - `OCCASION_RULES`, `STYLE_GUIDANCE`, `GENDER_STYLING`, and `COLOUR_GUIDANCE` are combined into the `rules` string by `rulesFor()`.
 - `src/data/colors.js`: colour hex map, default and garment-specific colour lists, patterns.
 - `src/data/types.js`: type options (Pants/Shoes/Skirt/Women types).
 - `src/data/garments.js`: garment lists by occasion/gender (men/women/couple formal).

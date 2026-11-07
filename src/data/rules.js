@@ -46,55 +46,55 @@ const OCCASION_RULES = {
 const STYLE_GUIDANCE = {
   Shirt: {
     woman: '',
-    man: 'Shirt: formal/business white or light blue; wedding guest white/light blue muted; funeral white only; date relaxed colours.'
+    man: 'Shirt: solid colour for formal/business/funeral; white or light blue for business; white only at funerals; subtle stripes/checks only at weddings/date; keep the shirt quieter than a strong tie or jacket pattern.'
   },
   Blouse: {
-    woman: 'Blouse: formal/business white/light blue/soft neutrals minimal patterns; wedding silk/satin pastel or jewel; funeral dark modest; date expressive textures.',
+    woman: 'Blouse: formal/business in white/light blue/soft neutrals with minimal patterns; silk/satin pastel or jewel for weddings; dark and modest for funerals; expressive textures for dates; use only one pattern or texture statement.',
     man: ''
   },
   Jacket: {
-    woman: 'Blazer/Jacket: neutral base; tailors separates; black/dark for funeral/formal; optional for date.',
-    man: 'Jacket: navy/charcoal business; black funeral/formal; optional informal/date.'
+    woman: 'Blazer/Jacket: neutral structured base; tailored blazer for business, black/dark for funeral/formal, optional for date; keep jacket patterns quieter than shirt or accessories.',
+    man: 'Jacket: navy/charcoal for business, black for funeral/formal, optional for date; subtle pattern only when shirt and tie are plain.'
   },
   Tie: {
     woman: '',
-    man: 'Tie: silk conservative patterns business; muted wedding; solid black/charcoal/navy/burgundy funeral; optional date.'
+    man: 'Tie: silk with conservative patterns for business, muted wedding patterns, solid black/charcoal/navy/burgundy for funeral, optional but neat for date; tie should not compete with a strong shirt pattern.'
   },
   Belt: {
     woman: '',
-    man: 'Belt: match shoes colour/finish; slim buckle.'
+    man: 'Belt: colour and finish should agree with shoes; slim buckle for dress trousers, broader for jeans; keep plain when another garment has a strong pattern.'
   },
   Watch: {
-    woman: 'Watch: strap match shoes/belt; case metal harmonises; conservative formal/business/funeral; expressive date.',
-    man: 'Watch: strap match shoes/belt; case metal harmonises; conservative formal/business/funeral; expressive date.'
+    woman: 'Watch: strap matches shoes/belt; case metal harmonises with accessories; keep dial conservative for formal/funeral; expressive case/dial choices only for date; avoid clashing strap and case metals.',
+    man: 'Watch: strap matches shoes/belt; case metal harmonises with accessories; keep dial conservative for formal/funeral; expressive case/dial choices only for date; avoid clashing strap and case metals.'
   },
   Pants: {
-    woman: 'Pants/Trousers: neutral tailored; wide/straight/tapered; fabric by occasion; black funeral/formal; lighter date.',
-    man: 'Pants: dress pants for formal; chinos for informal/date.'
+    woman: 'Pants/Trousers: straight/tapered/cigarette for business, palazzo/wide-leg for dressy or date, culottes/skater for casual; dark for formal/funeral, lighter for date; choose a cut that matches occasion formality.',
+    man: 'Pants: dress/tailored/slim for formal, chinos for smart-casual, jeans/cargo/corduroy for casual/date, joggers informal only; dark colours for formal/funeral.'
   },
   Shoes: {
-    woman: 'Shoes: closed-toe for business/funeral; heels/flats/wedges/boots by occasion; coordinate with bag/hardware; leather/satin for formal.',
-    man: 'Shoes: black/brown leather matched to belt; oxfords formal; loafers casual.'
+    woman: 'Shoes: closed-toe oxford/pump for business and funeral, loafer/ballet flat for smart-casual, sandal/wedge/mule for date, boots seasonally; heel height and material must suit occasion formality.',
+    man: 'Shoes: black/brown leather for formal; oxford/derby for business and formal, monk/loafer for smart occasions, brogue/chelsea for smart-casual, sneaker/espadrille for casual/date.'
   },
   Skirt: {
-    woman: 'Skirt: knee or longer for business/funeral; cocktail length for wedding/date; pencil/A-line/pleated; neutral solid formal; prints wedding/date.',
+    woman: 'Skirt: pencil for business/formal, midi/A-line/pleated for versatile or date, mini/maxi/wrap for date or casual; knee or longer for business/funeral; prints only for wedding or date.',
     man: ''
   },
   Dress: {
-    woman: 'Dress: full look excludes pants/skirt/blouse; fabric/colour by occasion; avoid white/ivory at weddings; closed-toe for funeral/formal.',
+    woman: 'Dress: full look excludes pants/skirt/blouse; fabric and colour by occasion; avoid white/ivory at weddings; closed-toe or refined shoes for funeral/formal; prints only for date or wedding.',
     man: ''
   },
   Handbag: {
-    woman: 'Handbag/Clutch: small clutch neutral/metallic formal; structured tote business; coordinated statement date.',
+    woman: 'Handbag/Clutch: small neutral or metallic clutch for formal, structured tote for business, coordinated statement for date; hardware should harmonise with watch and jewellery.',
     man: ''
   },
   Jewelry: {
-    woman: 'Jewelry: minimal formal/funeral/business; statement date/wedding guest; metal tone coordinates with watch/bag hardware.',
+    woman: 'Jewelry: minimal for formal/funeral/business, statement for date or wedding guest; metal tone should coordinate with watch case and bag hardware.',
     man: ''
   },
   'Pocket Square': {
-    woman: 'Pocket square: echo one colour from tie/shirt; avoid identical match; white linen safest formal; silk richer formal; cotton/linen casual; pattern quieter than tie.',
-    man: 'Pocket square: echo one colour from tie/shirt; avoid identical match; white linen safest formal; silk richer formal; cotton/linen casual; pattern quieter than tie.'
+    woman: 'Pocket square: echo one colour from tie or shirt; avoid an identical match; white linen safest for formal, silk richer for formal, cotton/linen casual; pattern must be quieter than the tie.',
+    man: 'Pocket square: echo one colour from tie or shirt; avoid an identical match; white linen safest for formal, silk richer for formal, cotton/linen casual; pattern must be quieter than the tie.'
   }
 };
 
@@ -104,9 +104,11 @@ const GENDER_STYLING = {
 };
 
 const COLOUR_GUIDANCE =
-  'Colour guidance: black signals formality/sadness (funeral/formal); navy/charcoal for business; white/light-blue shirts; ' +
-  'belt and watch strap should match shoes; watch case metal (silver/gold) may match other accessories; ' +
-  'avoid identical primary and secondary unless plain.';
+  'Colour and pattern guidance: black signals formality or mourning for funeral/formal; navy and charcoal for business; ' +
+  'white or light-blue shirts; belt and watch strap should match shoes; watch case metal such as silver or gold should match other accessories; ' +
+  'avoid identical primary and secondary colours unless the garment is plain; keep one strong pattern at most; ' +
+  'secondary colours support, not compete with, the primary colour; funeral outer garments should be dark and plain; ' +
+  'avoid white or ivory as a wedding guest; garment type must suit occasion formality.';
 
 export function garmentSpecificRules(g, woman) {
   const genderKey = woman ? 'woman' : 'man';
