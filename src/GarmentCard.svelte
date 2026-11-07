@@ -85,7 +85,7 @@ let values = {};
     if (typeof type === 'string' && type.includes('-secondary')) statusSecondary = 'loading';
     try {
       const isType = type.endsWith('Type');
-      const allowedPatterns = ['Plain','Stripes','Checks','Dots'];
+      const allowedPatterns = ['Plain','Stripes','Checks','Dots', 'Melange','Houndstooth','Pinstripes', 'Geometric', 'Floral'];
       const allowedColors = type === 'WatchStrap' ? watchStrapColors : type === 'WatchCase' ? watchCaseColors : type === 'WatchDial' ? watchDialColors : type === 'Blouse' ? womenBlouseColors : type === 'Dress' ? womenDressColors : type === 'Skirt' ? womenSkirtColors : type === 'Pants' && gender?.who === 'woman' ? womenPantsColors : type === 'Shoes' && gender?.who === 'woman' ? womenShoesColors : type === 'Handbag' ? womenBagColors : type === 'Jewelry' ? womenJewelryColors : type === 'Pattern' ? allowedPatterns : defaultColors;
       // Absolute suitability using noul independent questions for all options
       const candidateList = isType ? Object.keys(typeCriteria[type] || {})

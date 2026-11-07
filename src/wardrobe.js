@@ -4,7 +4,7 @@ const STORAGE_KEY = 'style-advisor-wardrobe';
 
 const ALLOWED_TYPES = ['Shirt','Jacket','Tie','Belt','Watch','Pants','Shoes','Blouse','Skirt','Dress','Handbag','Jewelry','Pocket Square'];
 const ALLOWED_COLORS = ['red','white','black','blue','grey','green','yellow','brown','purple','navy','charcoal','silver','royal blue','gold','ivory','beige','emerald','burgundy','sapphire','pastel pink','pastel blue','floral print','nude','rose gold','pearl'];
-const PATTERNS = ['Plain','Stripes','Checks','Dots'];
+const PATTERNS = ['Plain','Stripes','Checks','Dots', 'Melange','Houndstooth','Pinstripes', 'Geometric', 'Floral'];
 
 function toTitleCase(value) {
   if (typeof value !== 'string') return value;

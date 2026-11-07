@@ -7,7 +7,8 @@ export const colourHexMap = {
   'Rose Gold':'#B76E79', Pearl:'#EAE0C8'
 };
 
-export const patterns = ['Plain','Stripes','Checks','Dots'];
+export const patterns = ['Plain','Stripes','Checks','Dots','Melange','Houndstooth','Pinstripes', 'Geometric', 'Floral'
+];
 
 export const defaultColors = ['Red','White','Black','Blue','Grey','Green','Yellow','Brown','Purple'];
 
