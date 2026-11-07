@@ -459,27 +459,36 @@ async function fetchFor(field) {
           <label>{$t('strap_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => { const _n = !strapOpen; closeAllDropdowns(); strapOpen = _n; if (strapOpen) triggerStrap(); }} type="button">{strap ? $t('color_'+strap.replace(/\s+/g,'')) : ($language === 'pl' ? 'Wybierz kolor' : 'Select')}</button>
             {#if strapOpen}
               <div class="dropdown-panel">
+                {#if loadingStrap}<div class="dropdown-option">{$t('loading')}</div>
+                {:else}
                 {#each visibleOpts('strap', optsStrap) as o}<button class="dropdown-option" onclick={() => { strap = o.name; strapOpen=false; }} type="button"><span class="swatch" style="background:{colourHexMap[o.name]||'#888'}"></span> {$t('color_'+o.name.replace(/\s+/g,''))}{o.prob !== null ? ' ' + o.prob + '%' : ''}</button>{/each}
                 {#if !optsStrap.length}{#each watchStrapColors as c}<button class="dropdown-option" onclick={() => { strap = c; strapOpen=false; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}{/if}
                 {#if hasLow('strap', optsStrap) && !showLow.strap}<button class="dropdown-option" onclick={() => toggleLow('strap')}>{$t('lower_percent_options')}</button>{/if}
+                {/if}
               </div>
             {/if}
           </div></label>
           <label>{$t('case_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => { const _n = !caseOpen; closeAllDropdowns(); caseOpen = _n; if (caseOpen) triggerCase(); }} type="button">{caseC ? $t('color_'+caseC.replace(/\s+/g,'')) : ($language === 'pl' ? 'Wybierz kolor' : 'Select')}</button>
             {#if caseOpen}
               <div class="dropdown-panel">
+                {#if loadingCase}<div class="dropdown-option">{$t('loading')}</div>
+                {:else}
                 {#each visibleOpts('case', optsCase) as o}<button class="dropdown-option" onclick={() => { caseC = o.name; caseOpen=false; }} type="button"><span class="swatch" style="background:{colourHexMap[o.name]||'#888'}"></span> {$t('color_'+o.name.replace(/\s+/g,''))}{o.prob !== null ? ' ' + o.prob + '%' : ''}</button>{/each}
                 {#if !optsCase.length}{#each watchCaseColors as c}<button class="dropdown-option" onclick={() => { caseC = c; caseOpen=false; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}{/if}
                 {#if hasLow('case', optsCase) && !showLow.case}<button class="dropdown-option" onclick={() => toggleLow('case')}>{$t('lower_percent_options')}</button>{/if}
+                {/if}
               </div>
             {/if}
           </div></label>
           <label>{$t('dial_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => { const _n = !dialOpen; closeAllDropdowns(); dialOpen = _n; if (dialOpen) triggerDial(); }} type="button">{dial ? $t('color_'+dial.replace(/\s+/g,'')) : ($language === 'pl' ? 'Wybierz kolor' : 'Select')}</button>
             {#if dialOpen}
               <div class="dropdown-panel">
+                {#if loadingDial}<div class="dropdown-option">{$t('loading')}</div>
+                {:else}
                 {#each visibleOpts('dial', optsDial) as o}<button class="dropdown-option" onclick={() => { dial = o.name; dialOpen=false; }} type="button"><span class="swatch" style="background:{colourHexMap[o.name]||'#888'}"></span> {$t('color_'+o.name.replace(/\s+/g,''))}{o.prob !== null ? ' ' + o.prob + '%' : ''}</button>{/each}
                 {#if !optsDial.length}{#each watchDialColors as c}<button class="dropdown-option" onclick={() => { dial = c; dialOpen=false; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}{/if}
                 {#if hasLow('dial', optsDial) && !showLow.dial}<button class="dropdown-option" onclick={() => toggleLow('dial')}>{$t('lower_percent_options')}</button>{/if}
+                {/if}
               </div>
             {/if}
           </div></label>
@@ -505,9 +514,12 @@ async function fetchFor(field) {
             <label>{$t('pattern_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => { const _n = !patternOpen; closeAllDropdowns(); patternOpen = _n; if (patternOpen) triggerPattern(); }} type="button">{$t('pattern_'+pattern.replace(/\s+/g,''))}</button>
               {#if patternOpen}
                 <div class="dropdown-panel">
+                  {#if loadingPattern}<div class="dropdown-option">{$t('loading')}</div>
+                  {:else}
                   {#each visibleOpts('pattern', optsPattern) as o}<button class="dropdown-option" onclick={() => { pattern = o.name; patternOpen=false; }} type="button">{$t('pattern_'+o.name.replace(/\s+/g,''))}{o.prob !== null ? ' ' + o.prob + '%' : ''}</button>{/each}
                   {#if !optsPattern.length}{#each patterns as pp}<button class="dropdown-option" onclick={() => { pattern = pp; patternOpen=false; }} type="button">{pp}</button>{/each}{/if}
                   {#if hasLow('pattern', optsPattern) && !showLow.pattern}<button class="dropdown-option" onclick={() => toggleLow('pattern')}>{$t('lower_percent_options')}</button>{/if}
+                  {/if}
                 </div>
               {/if}
             </div></label>
@@ -517,9 +529,12 @@ async function fetchFor(field) {
               <button class="dropdown-trigger" onclick={() => { const _n = !secondaryOpen; closeAllDropdowns(); secondaryOpen = _n; if (secondaryOpen) triggerSecondary(); }} type="button">{secondary ? $t('color_'+secondary.replace(/\s+/g,'')) : ($language === 'pl' ? 'Wybierz kolor' : 'Select')}</button>
               {#if secondaryOpen}
                 <div class="dropdown-panel">
+                  {#if loadingSecondary}<div class="dropdown-option">{$t('loading')}</div>
+                  {:else}
                   {#each visibleOpts('secondary', optsSecondary.filter(o => o.name !== color)) as o}<button class="dropdown-option" onclick={() => { secondary = o.name; secondaryOpen=false; }} type="button"><span class="swatch" style="background:{colourHexMap[o.name]||'#888'}"></span> {$t('color_'+o.name.replace(/\s+/g,''))}{o.prob !== null ? ' ' + o.prob + '%' : ''}</button>{/each}
                   {#if !optsSecondary.length}{#each defaultColors.filter(c => c !== color) as c}<button class="dropdown-option" onclick={() => { secondary = c; secondaryOpen=false; }} type="button"><span class="swatch" style="background:{colourHexMap[c]||'#888'}"></span> {$t('color_'+c.replace(/\s+/g,''))}</button>{/each}{/if}
                   {#if hasLow('secondary', optsSecondary.filter(o => o.name !== color)) && !showLow.secondary}<button class="dropdown-option" onclick={() => toggleLow('secondary')}>{$t('lower_percent_options')}</button>{/if}
+                  {/if}
                 </div>
               {/if}
             </div></label>
@@ -528,12 +543,15 @@ async function fetchFor(field) {
             <label>{$t('type_label')} <div class="dropdown"><button class="dropdown-trigger" onclick={() => { const _n = !typeOpen; closeAllDropdowns(); typeOpen = _n; if (typeOpen) triggerType(); }} type="button">{typeValue ? ($t('type_' + typeValue.replace(/[\s-]+/g,'')) === 'type_' + typeValue.replace(/[\s-]+/g,'') ? typeValue : $t('type_' + typeValue.replace(/[\s-]+/g,''))) : ($language === 'pl' ? 'Wybierz' : 'Select')}</button>
               {#if typeOpen}
                 <div class="dropdown-panel">
+                  {#if (loadingPantsType || loadingShoesType)}<div class="dropdown-option">{$t('loading')}</div>
+                  {:else}
                   {#each visibleOpts('type', (optsPantsType.length?optsPantsType:[])) as o}<button class="dropdown-option" onclick={() => { typeValue = o.name; typeOpen=false; }} type="button">{$t('type_' + o.name.replace(/[\s-]+/g,''))}{o.prob !== null ? ' ' + o.prob + '%' : ''}</button>{/each}
                   {#if hasLow('type', (optsPantsType.length?optsPantsType:[])) && !showLow.type}<button class="dropdown-option" onclick={() => toggleLow('type')}>{$t('lower_percent_options')}</button>{/if}
                   {#if !(optsPantsType.length || optsShoesType.length)}
                     {#each Object.keys(typeCriteria[typeKey()]) as c}
                       <button class="dropdown-option" onclick={() => { typeValue = c; typeOpen=false; }} type="button">{($t('type_' + c.replace(/[\s-]+/g,'')) === 'type_' + c.replace(/[\s-]+/g,'')) ? c : $t('type_' + c.replace(/[\s-]+/g,''))}</button>
                     {/each}
+                  {/if}
                   {/if}
                 </div>
               {/if}

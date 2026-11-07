@@ -9,19 +9,27 @@ export class GarmentModal {
   patternTrigger() { return this.page.locator('.modal .dropdown-trigger').nth(1); }
   secondaryTrigger() { return this.page.locator('.modal .dropdown-trigger').nth(2); }
 
+  async _waitForLoaded() {
+    const loading = this.page.locator('.dropdown-option', { hasText: /loading|ładowanie/i });
+    await loading.waitFor({ state: 'hidden', timeout: 10000 }).catch(() => {});
+  }
+
   async selectColourByProbability() {
     await this.colourTrigger().click();
+    await this._waitForLoaded();
     await this.page.locator('.dropdown-option').first().click();
   }
 
   async selectPattern(nameRegex) {
     await this.patternTrigger().click();
+    await this._waitForLoaded();
     await this.page.locator('.dropdown-option').filter({ hasText: nameRegex }).click();
   }
 
   async selectSecondaryColour() {
     await this.secondaryTrigger().click();
     await this.page.waitForTimeout(2000);
+    await this._waitForLoaded();
     await this.page.locator('.dropdown-option').first().click();
   }
 

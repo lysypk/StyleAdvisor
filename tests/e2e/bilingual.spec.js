@@ -154,8 +154,11 @@ for (const [code, L] of Object.entries(LANGS)) {
     await shoeColorBtn.waitFor({ state: 'visible', timeout: 45000 });
     await shoeColorBtn.click();
     await page.locator('.modal .dropdown-trigger').filter({ hasText: /Wybierz|Select/ }).click();
-    await page.locator('.modal .dropdown-panel .dropdown-option').first().waitFor({ state: 'visible', timeout: 30000 });
-    await page.locator('.modal .dropdown-panel .dropdown-option').first().click();
+    await expect(page.locator('.modal .dropdown-panel')).not.toContainText(/Loading|Ładowanie/, { timeout: 45000 });
+    const typeLow = page.locator('.modal .dropdown-panel', { hasText: /Lower % options|Niższy % dopasowania/ }).locator('button').first();
+    if (await typeLow.isVisible({ timeout: 1000 }).catch(() => false)) await typeLow.click();
+    await page.locator('.modal .dropdown-panel .dropdown-option').filter({ hasNotText: /Lower % options|Niższy % dopasowania/ }).first().waitFor({ state: 'visible', timeout: 30000 });
+    await page.locator('.modal .dropdown-panel .dropdown-option').filter({ hasNotText: /Lower % options|Niższy % dopasowania/ }).first().click();
     await expect(page.locator('.modal .primary').first()).toBeEnabled({ timeout: 30000 });
     await page.locator('.modal .primary').first().click();
     await expect(page.locator('.modal')).toHaveCount(0);
