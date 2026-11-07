@@ -170,9 +170,9 @@ let values = {};
     setLoading(false);
   }
 
-function triggerColor() { if (!optsColor.length && !loadingColor) fetchColors(garment, (v)=>optsColor=v, (v)=>loadingColor=v, null); }
-  function triggerPattern() { if (!optsPattern.length && !loadingPattern) fetchColors('Pattern', (v)=>optsPattern=v, (v)=>loadingPattern=v, null); }
-  function triggerSecondary() { if (!optsSecondary.length && !loadingSecondary) fetchColors(garment+'-secondary', (v)=>optsSecondary=v, (v)=>loadingSecondary=v, color); }
+function triggerColor() { clearCache(); optsColor=[]; loadingColor=false; fetchColors(garment, (v)=>optsColor=v, (v)=>loadingColor=v, null); }
+  function triggerPattern() { clearCache(); optsPattern=[]; loadingPattern=false; fetchColors('Pattern', (v)=>optsPattern=v, (v)=>loadingPattern=v, null); }
+  function triggerSecondary() { clearCache(); optsSecondary=[]; loadingSecondary=false; fetchColors(garment+'-secondary', (v)=>optsSecondary=v, (v)=>loadingSecondary=v, color); }
   let typeValue = $state('');
   let strap = $state('');
   let caseC = $state('');
@@ -186,14 +186,14 @@ function triggerColor() { if (!optsColor.length && !loadingColor) fetchColors(ga
   let strapOpen = $state(false);
   let caseOpen = $state(false);
   let dialOpen = $state(false);
-  function triggerStrap() { if (!optsStrap.length && !loadingStrap) fetchColors('WatchStrap', (v)=>optsStrap=v, (v)=>loadingStrap=v, null); }
-  function triggerCase() { if (!optsCase.length && !loadingCase) fetchColors('WatchCase', (v)=>optsCase=v, (v)=>loadingCase=v, null); }
-  function triggerDial() { if (!optsDial.length && !loadingDial) fetchColors('WatchDial', (v)=>optsDial=v, (v)=>loadingDial=v, null); }
+  function triggerStrap() { clearCache(); optsStrap=[]; loadingStrap=false; fetchColors('WatchStrap', (v)=>optsStrap=v, (v)=>loadingStrap=v, null); }
+  function triggerCase() { clearCache(); optsCase=[]; loadingCase=false; fetchColors('WatchCase', (v)=>optsCase=v, (v)=>loadingCase=v, null); }
+  function triggerDial() { clearCache(); optsDial=[]; loadingDial=false; fetchColors('WatchDial', (v)=>optsDial=v, (v)=>loadingDial=v, null); }
   let optsPantsType = $state([]);
   let optsShoesType = $state([]);
   let loadingPantsType = $state(false);
   let loadingShoesType = $state(false);
-  function triggerType() { const tk = typeKey(); const loadingFlag = tk.startsWith('Women')||tk==='ShoesType'||tk==='PantsType' ? tk : tk; if (!(optsPantsType.length||optsShoesType.length) && !(loadingPantsType||loadingShoesType)) fetchColors(tk, (v)=>{ optsPantsType=v; optsShoesType=v; }, (v)=>{ loadingPantsType=v; loadingShoesType=v; }, null); }
+  function triggerType() { const tk = typeKey(); clearCache(); optsPantsType=[]; optsShoesType=[]; loadingPantsType=false; loadingShoesType=false; fetchColors(tk, (v)=>{ optsPantsType=v; optsShoesType=v; }, (v)=>{ loadingPantsType=v; loadingShoesType=v; }, null); }
   async function fetchWardrobe() {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 30000);
@@ -257,7 +257,11 @@ function openModal() {
 $effect(() => { console.log('[GC lang]', $language, 'grey=', get(t)('color_Grey')); });
 $effect(() => { if (secondary && secondary === color) secondary = ''; });
 
-  function typeKey() {
+  function clearCache() {
+  Object.keys(AI_SCORE_CACHE).forEach((k) => delete AI_SCORE_CACHE[k]);
+}
+
+function typeKey() {
     const g = gender?.who || 'man';
     if (garment === 'Pants') return g === 'woman' ? 'WomenPantsType' : 'PantsType';
     if (garment === 'Skirt') return 'WomenSkirtType';
@@ -442,7 +446,7 @@ async function fetchFor(field) {
 {#if open && $activeGarmentModal === (garmentKey || garment)}
    <div class="modal">
     <h3>{$t('garment_' + garment.replace(/\s+/g, ''))} {$t('details')}</h3>
-    <label class="wardrobe-toggle"><input type="checkbox" bind:checked={useWardrobe} onchange={() => { if (useWardrobe) fetchWardrobe(); else optsWardrobe = []; }} /> {$t('use_wardrobe_only')}</label>
+    <label class="wardrobe-toggle"><input type="checkbox" bind:checked={useWardrobe} onchange={() => { optsWardrobe = []; if (useWardrobe) fetchWardrobe(); }} /> {$t('use_wardrobe_only')}</label>
     {#if useWardrobe}
       <label>Owned {garment}<div class="dropdown"><button class="dropdown-trigger" onclick={() => { const _n = !wardrobeOpen; closeAllDropdowns(); wardrobeOpen = _n; if (wardrobeOpen && !optsWardrobe.length) fetchWardrobe(); }} type="button">{(wardrobeView.find(i=>i.id===wardrobePick)?.name) || 'Select item…'}</button>
         {#if wardrobeOpen}<div class="dropdown-panel">
